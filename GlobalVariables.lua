@@ -1,0 +1,3 @@
+--Lua file containing globally required variables for all classes
+
+local addOnName, namespace = ...

@@ -1,0 +1,3 @@
+--Lua file representing the event notifications
+
+local addOnName, namespace = ...

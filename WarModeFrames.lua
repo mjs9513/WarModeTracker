@@ -1,0 +1,3 @@
+--Lua file representing the tracker frames that the user views and interacts with
+
+local addOnName, namespace = ...

@@ -1,0 +1,3 @@
+--Lua file representing the Options -> AddOns panel for configuring the addon 
+
+local addOnName, namespace = ...

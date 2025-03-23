@@ -1,0 +1,3 @@
+--Lua file containing global methods
+
+local addOnName, namespace = ...

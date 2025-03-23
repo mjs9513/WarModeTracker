@@ -1,0 +1,3 @@
+--Lua file containing Slash command functionality for the addon
+
+local addOnName, namespace = ...
