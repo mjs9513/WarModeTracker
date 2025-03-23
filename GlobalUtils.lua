@@ -7,7 +7,7 @@ local addOnName, namespace = ...
 --the bottom if statement also sets the text for the notification if a new enemy bounty has appeared based on the list of enemy bounties changing
 function namespace.SearchForBounties()
     --_,vignetteGUID gets the GUID of the vignette. the _, is for the index, its a throwaway value. Just 1, 2, 3, etc.
-    if(warShowStates.warBountiesState == true)then
+    if(FrameStates.warBountiesState == true)then
         local enemyBountyNames = {}
         namespace.enemyBountyList = " "
         for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes()) do

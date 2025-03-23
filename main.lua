@@ -58,8 +58,8 @@ killingBlowResetZone = true;
 killingBlowResetLoad = true;
 
 --Library that stores button states
-warShowStates = {
-	["warFrameState"] = true,
+FrameStates = {
+	["MainFrame"] = true,
 	["warBountiesState"] = true,
 	["lockFrameState"] = false,
 	["logoState"] = true,
@@ -144,7 +144,7 @@ warCacheFrame:EnableMouse(true)
 --adjust the frames such that the war cache frame snaps down to the bounty frames
 --uses the GhostFrame to enable continuous movement
 function AdjustCacheFramePos()
-	if(warShowStates.warFrameState == true) then
+	if(FrameStates.MainFrame == true) then
 		warCacheFrame:SetPoint("Center", warTrackFrame, "Center", 0, 65)
 		if(active_items(enemyWarBounties) ~= nil and active_items(enemyWarBounties) ~= 0) then
 			warBountiesFrame:SetPoint("BOTTOM", warTrackFrame, "BOTTOM", 0, -73)
@@ -153,7 +153,7 @@ function AdjustCacheFramePos()
 		end
 		WarGhostFrame:SetHeight(160);
 	else
-			if(warShowStates.warBountiesState == true) then
+			if(FrameStates.warBountiesState == true) then
 				if(active_items(enemyWarBounties) ~= nil and active_items(enemyWarBounties) ~= 0) then
 					warBountiesFrame:SetPoint("BOTTOM", warCacheFrame, "Center", 0, -90);
 					else
@@ -376,7 +376,7 @@ function showWarHighestKill(highestKillState)
 end
 
 --function for specifying whether the bounty active/inactive text is hidden or shown
-function showWarCurrBounty(currBountyState)
+function ShowCurrentBounties(currBountyState)
 	if (currBountyState == true) then
 	currBountyText:Show()
 	else
@@ -385,7 +385,7 @@ function showWarCurrBounty(currBountyState)
 end
 
 --function for specifying whether the total kill count is hidden or shown
-function showWarTotalKill(totalKillState)
+function ShowTotalKills(totalKillState)
 	if (totalKillState == true) then
 	totalEnemiesText:Show()
 	else
@@ -406,7 +406,7 @@ function showLockFrameState(lockState)
 	end
 end
 
-function showWarKillingblow(killingState)
+function ShowKillingBlowTracker(killingState)
 	if (killingState == true) then
 	warTotalKillingBlowsText:Show()
 	else
@@ -415,7 +415,7 @@ function showWarKillingblow(killingState)
 end
 
 --function for setting the visible state of the War Cache Tracker
-function showCacheTracker(cacheTrackerState)
+function ShowWarCacheFrame(cacheTrackerState)
 	if (cacheTrackerState == true) then
 		warCacheFrame:Show()
 	else
@@ -510,7 +510,7 @@ warTotalKillingBlowsText:SetText("Killing Blows: " .. totalWarKillingBlows)
 		playerBountiesText:SetText(namespace.enemyBountyList)
 		--no enemy bounties, shrink the frame
 		warBountiesFrame:SetHeight(20)
-		if(warShowStates.warFrameState == false and warShowStates.warBountiesState == true) then
+		if(FrameStates.MainFrame == false and FrameStates.warBountiesState == true) then
 			AdjustCacheFramePos()
 		else
 			warBountiesFrame:SetPoint("BOTTOM", warTrackFrame, "BOTTOM", 0, -18)
@@ -521,16 +521,16 @@ end
 
 function setWarButtonChecks()
 	--Sets the checked status of the buttons based on the saved variab;es
-	warTrackFrameButton:SetChecked(warShowStates.warFrameState)
-	lockWarFrameButton:SetChecked(warShowStates.lockFrameState)
-	logoWarFrameButton:SetChecked(warShowStates.logoState)
-	warKillsButton:SetChecked(warShowStates.currKillState)
-	lastKillsButton:SetChecked(warShowStates.lastKillState)
-	highestKillsButton:SetChecked(warShowStates.highestWarKillState)
-	currBountyButton:SetChecked(warShowStates.currBountyState)
-	totalKillsButton:SetChecked(warShowStates.totalKillState)
-	pvpWarLvlButton:SetChecked(warShowStates.warPvPState)
-	warBountyFrameButton:SetChecked(warShowStates.warBountiesState)
+	warTrackFrameButton:SetChecked(FrameStates.MainFrame)
+	lockWarFrameButton:SetChecked(FrameStates.lockFrameState)
+	logoWarFrameButton:SetChecked(FrameStates.logoState)
+	warKillsButton:SetChecked(FrameStates.currKillState)
+	lastKillsButton:SetChecked(FrameStates.lastKillState)
+	highestKillsButton:SetChecked(FrameStates.highestWarKillState)
+	currBountyButton:SetChecked(FrameStates.currBountyState)
+	totalKillsButton:SetChecked(FrameStates.totalKillState)
+	pvpWarLvlButton:SetChecked(FrameStates.warPvPState)
+	warBountyFrameButton:SetChecked(FrameStates.warBountiesState)
 	warNotificationButton:SetChecked(showWarTrackWarningNotification)
 	warSoundNotificationSoundButton:SetChecked(playWarTrackWarningNotification)
 	HideWarCombatButton:SetChecked(warHideCombatState)
@@ -550,31 +550,31 @@ end
 
 function setWarFrameStatus()
 	--Sets the buttons to display on load based on saved variab;es
-	ShowWarFrame(warShowStates.warFrameState);
-	showWarCurrKill(warShowStates.currKillState);
-	showWarLastKill(warShowStates.lastKillState);
-	showWarHighestKill(warShowStates.highestWarKillState);
-	showWarCurrBounty(warShowStates.currBountyState);
-	showWarTotalKill(warShowStates.totalKillState);
-	showWarLogo(warShowStates.logoState);
-	showLockFrameState(warShowStates.lockFrameState)
-	showWarPvPLevel(warShowStates.warPvPState)
-	ShowBountyFrame(warShowStates.warBountiesState)
-	showWarKillingblow(killingBlowState)
-	showCacheTracker(cacheTrackerState)
+	ShowWarFrame(FrameStates.MainFrame);
+	showWarCurrKill(FrameStates.currKillState);
+	showWarLastKill(FrameStates.lastKillState);
+	showWarHighestKill(FrameStates.highestWarKillState);
+	ShowCurrentBounties(FrameStates.currBountyState);
+	ShowTotalKills(FrameStates.totalKillState);
+	showWarLogo(FrameStates.logoState);
+	showLockFrameState(FrameStates.lockFrameState)
+	showWarPvPLevel(FrameStates.warPvPState)
+	ShowBountyFrame(FrameStates.warBountiesState)
+	ShowKillingBlowTracker(killingBlowState)
+	ShowWarCacheFrame(cacheTrackerState)
 end
 
 function SetWMTStatus(status)
 	if(status == true or status == false or status == 1 or status == 0) then
-		  warShowStates.warFrameState = status
-		  warShowStates.currKillState = status
-		  warShowStates.lastKillState = status
-		  warShowStates.highestWarKillState = status
-		  warShowStates.currBountyState = status
-		  warShowStates.totalKillState = status
-		  warShowStates.logoState = status
-		  warShowStates.warPvPState = status
-		  warShowStates.warBountiesState = status
+		  FrameStates.MainFrame = status
+		  FrameStates.currKillState = status
+		  FrameStates.lastKillState = status
+		  FrameStates.highestWarKillState = status
+		  FrameStates.currBountyState = status
+		  FrameStates.totalKillState = status
+		  FrameStates.logoState = status
+		  FrameStates.warPvPState = status
+		  FrameStates.warBountiesState = status
 		  killingBlowState = status
 		  cacheTrackerState = status
 		  showWarTrackWarningNotification = status
@@ -611,13 +611,13 @@ warTrackFrameButton:SetScript("OnClick",
 			local checker = warTrackFrameButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.warFrameState = true;
-				ShowWarFrame(warShowStates.warFrameState);
+				FrameStates.MainFrame = true;
+				ShowWarFrame(FrameStates.MainFrame);
 				AdjustCacheFramePos()
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.warFrameState = false;
-				ShowWarFrame(warShowStates.warFrameState);
+				FrameStates.MainFrame = false;
+				ShowWarFrame(FrameStates.MainFrame);
 				AdjustCacheFramePos()
 			end
 	end);
@@ -633,12 +633,12 @@ warTrackFrameButton:SetScript("OnClick",
 				if checker then
 					PlaySound(856) -- Check Click Sound
 					cacheTrackerState = true;
-					showCacheTracker(cacheTrackerState)
+					ShowWarCacheFrame(cacheTrackerState)
 					AdjustCacheFramePos()
 				else
 					PlaySound(857) -- Check Unclick Sound
 					cacheTrackerState = false;
-					showCacheTracker(cacheTrackerState)
+					ShowWarCacheFrame(cacheTrackerState)
 					AdjustCacheFramePos()
 				end
 		end);
@@ -811,13 +811,13 @@ warBountyFrameButton:SetScript("OnClick",
 			local checker = warBountyFrameButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.warBountiesState = true;
-				ShowBountyFrame(warShowStates.warBountiesState);
+				FrameStates.warBountiesState = true;
+				ShowBountyFrame(FrameStates.warBountiesState);
 				AdjustCacheFramePos()
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.warBountiesState = false;
-				ShowBountyFrame(warShowStates.warBountiesState);
+				FrameStates.warBountiesState = false;
+				ShowBountyFrame(FrameStates.warBountiesState);
 				AdjustCacheFramePos()
 			end
 	end);
@@ -832,12 +832,12 @@ lockWarFrameButton:SetScript("OnClick",
 			local checker = lockWarFrameButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.lockFrameState = true;
-				showLockFrameState(warShowStates.lockFrameState);
+				FrameStates.lockFrameState = true;
+				showLockFrameState(FrameStates.lockFrameState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.lockFrameState = false;
-				showLockFrameState(warShowStates.lockFrameState);
+				FrameStates.lockFrameState = false;
+				showLockFrameState(FrameStates.lockFrameState);
 			end
 	end);
 
@@ -914,12 +914,12 @@ logoWarFrameButton:SetScript("OnClick",
 			local checker = logoWarFrameButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.logoState = true;
-				showWarLogo(warShowStates.logoState);
+				FrameStates.logoState = true;
+				showWarLogo(FrameStates.logoState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.logoState = false;
-				showWarLogo(warShowStates.logoState);
+				FrameStates.logoState = false;
+				showWarLogo(FrameStates.logoState);
 			end
 	end);
 
@@ -934,11 +934,11 @@ enableWarKillingblowsButton:SetScript("OnClick",
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				killingBlowState = true
-				showWarKillingblow(killingBlowState)
+				ShowKillingBlowTracker(killingBlowState)
 			else
 				PlaySound(857) -- Check Unclick Sound
 				killingBlowState = false
-				showWarKillingblow(killingBlowState)
+				ShowKillingBlowTracker(killingBlowState)
 			end
 	end);
 
@@ -952,12 +952,12 @@ pvpWarLvlButton:SetScript("OnClick",
 			local checker = pvpWarLvlButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.warPvPState = true;
-				showWarPvPLevel(warShowStates.warPvPState);
+				FrameStates.warPvPState = true;
+				showWarPvPLevel(FrameStates.warPvPState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.warPvPState = false;
-				showWarPvPLevel(warShowStates.warPvPState);
+				FrameStates.warPvPState = false;
+				showWarPvPLevel(FrameStates.warPvPState);
 			end
 	end);
 
@@ -971,12 +971,12 @@ warKillsButton:SetScript("OnClick",
 			local checker = warKillsButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.currKillState = true;
-				showWarCurrKill(warShowStates.currKillState);
+				FrameStates.currKillState = true;
+				showWarCurrKill(FrameStates.currKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.currKillState = false;
-				showWarCurrKill(warShowStates.currKillState);
+				FrameStates.currKillState = false;
+				showWarCurrKill(FrameStates.currKillState);
 			end
 	end);
 
@@ -990,12 +990,12 @@ lastKillsButton:SetScript("OnClick",
 			local checker = lastKillsButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.lastKillState = true;
-				showWarLastKill(warShowStates.lastKillState);
+				FrameStates.lastKillState = true;
+				showWarLastKill(FrameStates.lastKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.lastKillState = false;
-				showWarLastKill(warShowStates.lastKillState);
+				FrameStates.lastKillState = false;
+				showWarLastKill(FrameStates.lastKillState);
 			end
 	end);
 
@@ -1009,12 +1009,12 @@ highestKillsButton:SetScript("OnClick",
 			local checker = highestKillsButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.highestWarKillState = true;
-				showWarHighestKill(warShowStates.highestWarKillState);
+				FrameStates.highestWarKillState = true;
+				showWarHighestKill(FrameStates.highestWarKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.highestWarKillState = false;
-				showWarHighestKill(warShowStates.highestWarKillState);
+				FrameStates.highestWarKillState = false;
+				showWarHighestKill(FrameStates.highestWarKillState);
 			end
 	end);
 
@@ -1028,12 +1028,12 @@ currBountyButton:SetScript("OnClick",
 			local checker = currBountyButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.currBountyState = true;
-				showWarCurrBounty(warShowStates.currBountyState);
+				FrameStates.currBountyState = true;
+				ShowCurrentBounties(FrameStates.currBountyState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.currBountyState = false;
-				showWarCurrBounty(warShowStates.currBountyState);
+				FrameStates.currBountyState = false;
+				ShowCurrentBounties(FrameStates.currBountyState);
 			end
 	end);
 
@@ -1047,12 +1047,12 @@ totalKillsButton:SetScript("OnClick",
 			local checker = totalKillsButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
-				warShowStates.totalKillState = true;
-				showWarTotalKill(warShowStates.totalKillState);
+				FrameStates.totalKillState = true;
+				ShowTotalKills(FrameStates.totalKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
-				warShowStates.totalKillState = false;
-				showWarTotalKill(warShowStates.totalKillState);
+				FrameStates.totalKillState = false;
+				ShowTotalKills(FrameStates.totalKillState);
 			end
 	end);
 
@@ -1396,12 +1396,12 @@ local function WMTSlashCommands(cmd, editbox)
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "lock") then
-		if (warShowStates.lockFrameState == true) then
+		if (FrameStates.lockFrameState == true) then
 			print("|cffffff00 WMT Lock Status: UNLOCKED |r")
-			warShowStates.lockFrameState = false
+			FrameStates.lockFrameState = false
 		else
 			print("|cffffff00 WMT Lock Status: LOCKED |r")
-			warShowStates.lockFrameState = true
+			FrameStates.lockFrameState = true
 		end
 		setWarFrameStatus()
 		setWarButtonChecks()
@@ -1430,23 +1430,23 @@ local function WMTSlashCommands(cmd, editbox)
 		setWarButtonChecks()
 	end
 	if(string.lower(cmd) == "main frame") then
-		if(warShowStates.warFrameState == true) then
+		if(FrameStates.MainFrame == true) then
 			print("|cffffff00 WMT Main Frame Status: INACTIVE |r")
-			warShowStates.warFrameState = false
+			FrameStates.MainFrame = false
 		else
 			print("|cffffff00 WMT Main Frame Status: ACTIVE |r")
-			warShowStates.warFrameState = true
+			FrameStates.MainFrame = true
 		end
 		setWarFrameStatus()
 		setWarButtonChecks()
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "bounty frame") then
-		if(warShowStates.warBountiesState == true) then
+		if(FrameStates.warBountiesState == true) then
 			print("|cffffff00 WMT Bounty Frame Status: INACTIVE |r")
-			warShowStates.warBountiesState = false
+			FrameStates.warBountiesState = false
 		else
-			warShowStates.warBountiesState = true
+			FrameStates.warBountiesState = true
 			print("|cffffff00 WMT Bounty Frame Status: ACTIVE |r")
 		end
 		setWarFrameStatus()
@@ -1617,10 +1617,10 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		warCombatState = true
 		if (warHideCombatState == true) then
 			WarGhostFrame:Hide();
-			if(warShowStates.warFrameState == true) then
+			if(FrameStates.MainFrame == true) then
 				warTrackFrame:Hide()
 			end
-			if(warShowStates.warBountiesState == true) then
+			if(FrameStates.warBountiesState == true) then
 				warBountiesFrame:Hide()
 			end
 			if(cacheTrackerState == true) then
@@ -1631,10 +1631,10 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	if (event=="PLAYER_REGEN_ENABLED") then
 		warCombatState = false
 		WarGhostFrame:Show();
-		if(warShowStates.warFrameState == true) then
+		if(FrameStates.MainFrame == true) then
 				warTrackFrame:Show()
 		end
-		if(warShowStates.warBountiesState == true) then
+		if(FrameStates.warBountiesState == true) then
 			warBountiesFrame:Show()
 		end
 		if(cacheTrackerState == true) then
@@ -1830,13 +1830,13 @@ if(warHidePvPState == true) then
 	end
 end
 
-if (warShowStates.warFrameState == false) then
+if (FrameStates.MainFrame == false) then
 	if (warTrackFrame:IsShown() == true) then
 		warTrackFrame:Hide()
 	end
 end
 
-if (warShowStates.warBountiesState == false) then
+if (FrameStates.warBountiesState == false) then
 	if (warBountiesFrame:IsShown() == true) then
 		warBountiesFrame:Hide()
 	end
