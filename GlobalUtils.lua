@@ -68,11 +68,11 @@ function namespace.SearchForBounties()
             namespace.enemyBountyList = namespace.enemyBountyList .. " " .. tostring(enemyWarBounties[i].. ",")
         end
         if (table.getn(enemyBountyNames) > namespace.numEnemyBounties) then
-            setWMTNotificationText("A NEW ENEMY BOUNTY HAS APPEARED", 6)
+            SetNotificationText("A NEW ENEMY BOUNTY HAS APPEARED", 6)
             namespace.numEnemyBounties = table.getn(enemyBountyNames)
         else
             namespace.numEnemyBounties = table.getn(enemyBountyNames)
         end
-        setWarTrackText()
+        SetTrackText()
     end
 end

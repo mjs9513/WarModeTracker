@@ -88,7 +88,7 @@ local warChestType = " ";
 
 --Checks if the player is bountied. AuraUtil.FindAuraByName searches the player for a specified buff/debuff. Third parameter is the filter (one string separated by spaces), its very specific
 --also sets checkSelfNotification to true if they dont have a bounty so the addon re-checks for the next bounty occurence
-function isBountied()
+function IsBountied()
 	bountyCount = AuraUtil.FindAuraByName("Bounty Hunted", "player", "NOT_CANCELABLE HARMFUL")
 	if (bountyCount ~= nil) then
 		currBounty = "ACTIVE"
@@ -99,7 +99,7 @@ function isBountied()
 end
 
 --returns the number of items within a 'source' table, TEST FUNCTION
-function active_items(source)
+function GetActiveItems(source)
 	 return table.getn(source);
 end
 
@@ -146,67 +146,67 @@ warCacheFrame:EnableMouse(true)
 function AdjustCacheFramePos()
 	if(FrameStates.MainFrame == true) then
 		warCacheFrame:SetPoint("Center", warTrackFrame, "Center", 0, 65)
-		if(active_items(enemyWarBounties) ~= nil and active_items(enemyWarBounties) ~= 0) then
+		if(GetActiveItems(enemyWarBounties) ~= nil and GetActiveItems(enemyWarBounties) ~= 0) then
 			warBountiesFrame:SetPoint("BOTTOM", warTrackFrame, "BOTTOM", 0, -73)
 		else
 			warBountiesFrame:SetPoint("BOTTOM", warTrackFrame, "BOTTOM", 0, -18)
 		end
 		WarGhostFrame:SetHeight(160);
 	else
-			if(FrameStates.warBountiesState == true) then
-				if(active_items(enemyWarBounties) ~= nil and active_items(enemyWarBounties) ~= 0) then
-					warBountiesFrame:SetPoint("BOTTOM", warCacheFrame, "Center", 0, -90);
-					else
-					warBountiesFrame:SetPoint("BOTTOM", warCacheFrame, "Center", 0, -35);
-				end
-				warCacheFrame:SetPoint("TOP", WarGhostFrame, "TOP", 0, 0)
-				WarGhostFrame:SetHeight(100);
+		if(FrameStates.warBountiesState == true) then
+			if(GetActiveItems(enemyWarBounties) ~= nil and GetActiveItems(enemyWarBounties) ~= 0) then
+				warBountiesFrame:SetPoint("BOTTOM", warCacheFrame, "Center", 0, -90);
+				else
+				warBountiesFrame:SetPoint("BOTTOM", warCacheFrame, "Center", 0, -35);
 			end
+			warCacheFrame:SetPoint("TOP", WarGhostFrame, "TOP", 0, 0)
+			WarGhostFrame:SetHeight(100);
 		end
 	end
+end
 
 --sets whether or not the faction banner is that of the alliance or horde
-local warFactBanner = warTrackFrame:CreateTexture(nil,"ARTWORK")
+local _factionBanner = warTrackFrame:CreateTexture(nil,"ARTWORK")
 if (playerFaction == "Alliance") then
-	warFactBanner:SetTexture("Interface\\Timer\\Alliance-Logo.blp")
+	_factionBanner:SetTexture("Interface\\Timer\\Alliance-Logo.blp")
 else
-	warFactBanner:SetTexture("Interface\\Timer\\Horde-Logo.blp")
+	_factionBanner:SetTexture("Interface\\Timer\\Horde-Logo.blp")
 end
 
 --Creating the background image for the frames, bg file is the background file it will call from
 --edgefile is the border file it will call from, tile is whether the bg image is tiled or stretched out
 --edge size is the size of the edge, basicall border thickness
 --insets is think the dimensions in which the background will draw by. Idea is take edge size and divide by 4 for each.
-function warTrackFrameSet()
-warTrackFrame:SetBackdrop( {
-	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-	tile = false, edgeSize = 10,
-	insets = {left = 2.5, right = 2.5, top = 2.5, bottom = 2.5}});
-warTrackFrame:SetBackdropColor(warFrameR, warFrameG, warFrameB, warFrameTransparency);
-warTrackFrame:SetBackdropBorderColor(1, 1, 1)
-
-warBountiesFrame:SetBackdrop( {
-	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-	tile = false, edgeSize = 10,
-	insets = {left = 2.5, right = 2.5, top = 2.5, bottom = 2.5}});
-warBountiesFrame:SetBackdropColor(warFrameR, warFrameG, warFrameB, warFrameTransparency);
-warBountiesFrame:SetBackdropBorderColor(1, 1, 1)
-
-warCacheFrame:SetBackdrop( {
-	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-	tile = false, edgeSize = 10,
-	insets = {left = 2.5, right = 2.5, top = 2.5, bottom = 2.5}});
-warCacheFrame:SetBackdropColor(warFrameR, warFrameG, warFrameB, warFrameTransparency);
-warCacheFrame:SetBackdropBorderColor(1, 1, 1)
+function SetFrameBackgrounds()
+	warTrackFrame:SetBackdrop( {
+		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+		tile = false, edgeSize = 10,
+		insets = {left = 2.5, right = 2.5, top = 2.5, bottom = 2.5}});
+	warTrackFrame:SetBackdropColor(warFrameR, warFrameG, warFrameB, warFrameTransparency);
+	warTrackFrame:SetBackdropBorderColor(1, 1, 1)
+	
+	warBountiesFrame:SetBackdrop( {
+		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+		tile = false, edgeSize = 10,
+		insets = {left = 2.5, right = 2.5, top = 2.5, bottom = 2.5}});
+	warBountiesFrame:SetBackdropColor(warFrameR, warFrameG, warFrameB, warFrameTransparency);
+	warBountiesFrame:SetBackdropBorderColor(1, 1, 1)
+	
+	warCacheFrame:SetBackdrop( {
+		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+		tile = false, edgeSize = 10,
+		insets = {left = 2.5, right = 2.5, top = 2.5, bottom = 2.5}});
+	warCacheFrame:SetBackdropColor(warFrameR, warFrameG, warFrameB, warFrameTransparency);
+	warCacheFrame:SetBackdropBorderColor(1, 1, 1)
 
 end
 
 --text for honor level
 local warHonorLvlText = warTrackFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-warHonorLvlText:SetPoint("CENTER", warFactBanner, "TOP", 0, -8)
+warHonorLvlText:SetPoint("CENTER", _factionBanner, "TOP", 0, -8)
 
 
 --text for number of current kills
@@ -218,14 +218,14 @@ local warTotalKillingBlowsText = warTrackFrame:CreateFontString(nil, "ARTWORK", 
 warTotalKillingBlowsText:SetPoint("CENTER", warEnemiesText, "TOP", 3, -21)
 
 --text for the last kill streak
-local warLastText = warTrackFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-warLastText:SetPoint("CENTER", warTotalKillingBlowsText, "TOP", 0, -21)
+local lastKillText = warTrackFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+lastKillText:SetPoint("CENTER", warTotalKillingBlowsText, "TOP", 0, -21)
 
 
 
 --text for highest number of kills
 local highestEnemiesText = warTrackFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-highestEnemiesText:SetPoint("CENTER", warLastText, "TOP", 1, -21)
+highestEnemiesText:SetPoint("CENTER", lastKillText, "TOP", 1, -21)
 
 
 
@@ -249,9 +249,9 @@ end
 
 
 --positions the faction banner within the frame
-warFactBanner:SetPoint("LEFT", warTrackFrame, "LEFT", -15, -5)
-warFactBanner:SetWidth(100)
-warFactBanner:SetHeight(100)
+_factionBanner:SetPoint("LEFT", warTrackFrame, "LEFT", -15, -5)
+_factionBanner:SetWidth(100)
+_factionBanner:SetHeight(100)
 
 --sets the intiial point for warTrackFrame
 warTrackFrame:SetPoint("CENTER", WarGhostFrame, "CENTER", 0, 0);
@@ -287,7 +287,7 @@ warModeNotificationText:SetTextColor(1, .20, .20)
 warModeNotificationText:Hide()
 
 --function that sets the notification text, and the timer for which the notification text will display
-function setWMTNotificationText(message, timer)
+function SetNotificationText(message, timer)
 if (showWarTrackWarningNotification == true) then
 		warModeNotificationText:SetText(message)
 		if(playWarTrackWarningNotification == true) then
@@ -298,12 +298,12 @@ if (showWarTrackWarningNotification == true) then
 end
 
 --function for showing bounty notification text
-function showNotificationText()
+function ShowNotificationText()
 	warModeNotificationText:Show()
 end
 
 --function for hiding the notification text
-function hideNotificationText()
+function HideNotificationText()
 	warModeNotificationText:Hide()
 end
 
@@ -331,16 +331,16 @@ function ShowBountyFrame(frameState)
 end
 
 --function for specifying whether the faction banner is hidden or shown
-function showWarLogo(warLogoState)
+function ShowFactionBanner(warLogoState)
 	if (warLogoState == true) then
-	warFactBanner:Show()
+	_factionBanner:Show()
 	else
-	warFactBanner:Hide()
+	_factionBanner:Hide()
 	end
 end
 
 --function for specifying whether the player pvp level is hidden or shown
-function showWarPvPLevel(pvpLvlState)
+function ShowPvPLevel(pvpLvlState)
 	if (pvpLvlState == true) then
 	warHonorLvlText:Show()
 	else
@@ -349,7 +349,7 @@ function showWarPvPLevel(pvpLvlState)
 end
 
 --function for specifying whether the current enemy kill count is hidden or shown
-function showWarCurrKill(currKillState)
+function ShowCurrentKills(currKillState)
 	if (currKillState == true) then
 	warEnemiesText:Show()
 	else
@@ -358,16 +358,16 @@ function showWarCurrKill(currKillState)
 end
 
 --function for specifying whether the last kill streak is hidden or shown
-function showWarLastKill(lastKillState)
+function ShowLastKill(lastKillState)
 	if (lastKillState == true) then
-	warLastText:Show()
+	lastKillText:Show()
 	else
-	warLastText:Hide()
+	lastKillText:Hide()
 	end
 end
 
 --function for specifying whether the highest kill streak is hidden or shown
-function showWarHighestKill(highestKillState)
+function ShowHighestKills(highestKillState)
 	if (highestKillState == true) then
 	highestEnemiesText:Show()
 	else
@@ -394,7 +394,7 @@ function ShowTotalKills(totalKillState)
 end
 
 --function for specifying whether the main frame is movable or not. is hidden or shown
-function showLockFrameState(lockState)
+function SetFramesInteractable(lockState)
 	if (lockState == false) then
 	WarGhostFrame:EnableMouse(true)
 	warBountiesFrame:EnableMouse(true)
@@ -435,7 +435,7 @@ end
 --reads in and parses the War Cache Messages. If nil values, sets to 0s and throw aways
 --if the zones are different, its a new war chest and updates appropriately
 --if the location is 15 different in X or Y, its a new chest and updates it
-function parseWarCacheMessage(oldCache, newCache)
+function ParseWarCacheMessage(oldCache, newCache)
 	local newMessage, newX, newY, newZoneName = strsplit("-", newCache)
 	local oldMessage, oldX, oldY, oldZoneName = strsplit("-", oldCache)
 	local currZone = GetZoneText()
@@ -459,7 +459,7 @@ function parseWarCacheMessage(oldCache, newCache)
 	 	wmtWarCacheText = newCache
 		warCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
 		wmtCacheTimer = 200
-		setWMTNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
+		SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
 		return true;
 	end
 	if (((tonumber(newX) >= tonumber(oldX) + 15) or (tonumber(newX) <= tonumber(oldX) - 15)) or ((tonumber(newY) >= tonumber(oldY) + 15) or (tonumber(newY) <= tonumber(oldY) - 15))) then
@@ -467,16 +467,16 @@ function parseWarCacheMessage(oldCache, newCache)
 		wmtWarCacheText = newCache
 		warCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
 		wmtCacheTimer = 200
-		setWMTNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
+		SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
 		return true;
 	end
 end
 
 --Function for setting the text color in the War Tracker panel
-function setWarTextColor()
+function SetFrameTextColors()
 warEnemiesText:SetTextColor(warTextR, warTextG, warTextB)
 warTotalKillingBlowsText:SetTextColor(warTextR, warTextG, warTextB)
-warLastText:SetTextColor(warTextR, warTextG, warTextB)
+lastKillText:SetTextColor(warTextR, warTextG, warTextB)
 highestEnemiesText:SetTextColor(warTextR, warTextG, warTextB)
 currBountyText:SetTextColor(warTextR, warTextG, warTextB)
 totalEnemiesText:SetTextColor(warTextR, warTextG, warTextB)
@@ -490,16 +490,16 @@ end
 
 --Function for setting up the text for the War Tracker panel, if there are no war bounties sets active bounties to 0, else gets num active bounties based on the list of names
 --also sets the text to the list string
-function setWarTrackText()
+function SetTrackText()
 totalEnemiesText:SetText("Total Honor Kills: " .. totalWarKills)
 highestEnemiesText:SetText("Highest Streak: " .. highestWarKills)
-warLastText:SetText("Last Kill Streak: " .. lastWarKills)
+lastKillText:SetText("Last Kill Streak: " .. lastWarKills)
 warEnemiesText:SetText("Enemies Slain: " .. warKills)
 currBountyText:SetText("Bounty Status: " .. currBounty)
 warHonorLvlText:SetText("Lvl ".. pvpWarRank)
 warTotalKillingBlowsText:SetText("Killing Blows: " .. totalWarKillingBlows)
-	if(active_items(enemyWarBounties) ~= nil and active_items(enemyWarBounties) ~= 0) then
-		currNumEnemyBounties:SetText("Active Enemy Bounties: " .. active_items(enemyWarBounties))
+	if(GetActiveItems(enemyWarBounties) ~= nil and GetActiveItems(enemyWarBounties) ~= 0) then
+		currNumEnemyBounties:SetText("Active Enemy Bounties: " .. GetActiveItems(enemyWarBounties))
 		playerBountiesText:SetText(namespace.enemyBountyList)
 		--set the bounties frame to the natural height and location
 		AdjustCacheFramePos()
@@ -519,10 +519,10 @@ warTotalKillingBlowsText:SetText("Killing Blows: " .. totalWarKillingBlows)
 	end
 end
 
-function setWarButtonChecks()
+function SetSettingsButtonStates()
 	--Sets the checked status of the buttons based on the saved variab;es
 	warTrackFrameButton:SetChecked(FrameStates.MainFrame)
-	lockWarFrameButton:SetChecked(FrameStates.lockFrameState)
+	LockFramesButton:SetChecked(FrameStates.lockFrameState)
 	logoWarFrameButton:SetChecked(FrameStates.logoState)
 	warKillsButton:SetChecked(FrameStates.currKillState)
 	lastKillsButton:SetChecked(FrameStates.lastKillState)
@@ -530,7 +530,7 @@ function setWarButtonChecks()
 	currBountyButton:SetChecked(FrameStates.currBountyState)
 	totalKillsButton:SetChecked(FrameStates.totalKillState)
 	pvpWarLvlButton:SetChecked(FrameStates.warPvPState)
-	warBountyFrameButton:SetChecked(FrameStates.warBountiesState)
+	BountiesFrameButton:SetChecked(FrameStates.warBountiesState)
 	warNotificationButton:SetChecked(showWarTrackWarningNotification)
 	warSoundNotificationSoundButton:SetChecked(playWarTrackWarningNotification)
 	HideWarCombatButton:SetChecked(warHideCombatState)
@@ -540,25 +540,25 @@ function setWarButtonChecks()
 	warCachePartyButton:SetChecked(warcacheParty)
 	warCacheGeneralButton:SetChecked(warcacheGeneral)
 
-	warResetDeathButton:SetChecked(killingBlowResetDeath)
-	warResetOnZoneButton:SetChecked(killingBlowResetZone)
-	warResetOnLoadButton:SetChecked(killingBlowResetLoad)
+	ResetOnDeathButton:SetChecked(killingBlowResetDeath)
+	ResetOnZoningButton:SetChecked(killingBlowResetZone)
+	ResetOnLoadButton:SetChecked(killingBlowResetLoad)
 	if(killingBlowResetDeath == false and killingBlowResetLoad == false and killingBlowResetZone == false) then
-		warNeverResetButton:SetChecked(true)
+		NeverResetButton:SetChecked(true)
 	end
 end
 
-function setWarFrameStatus()
-	--Sets the buttons to display on load based on saved variab;es
+function InitializeMainFrame()
+	--Sets the buttons to display on load based on saved variables
 	ShowWarFrame(FrameStates.MainFrame);
-	showWarCurrKill(FrameStates.currKillState);
-	showWarLastKill(FrameStates.lastKillState);
-	showWarHighestKill(FrameStates.highestWarKillState);
+	ShowCurrentKills(FrameStates.currKillState);
+	ShowLastKill(FrameStates.lastKillState);
+	ShowHighestKills(FrameStates.highestWarKillState);
 	ShowCurrentBounties(FrameStates.currBountyState);
 	ShowTotalKills(FrameStates.totalKillState);
-	showWarLogo(FrameStates.logoState);
-	showLockFrameState(FrameStates.lockFrameState)
-	showWarPvPLevel(FrameStates.warPvPState)
+	ShowFactionBanner(FrameStates.logoState);
+	SetFramesInteractable(FrameStates.lockFrameState)
+	ShowPvPLevel(FrameStates.warPvPState)
 	ShowBountyFrame(FrameStates.warBountiesState)
 	ShowKillingBlowTracker(killingBlowState)
 	ShowWarCacheFrame(cacheTrackerState)
@@ -586,7 +586,7 @@ function SetWMTStatus(status)
 		end
 end
 
---Creat the options panel frame
+--Create the options panel frame
 local warTrackOptions = CreateFrame("Frame")
 warTrackOptions.name = addOnName
 --InterfaceOptions_AddCategory(warTrackOptions)
@@ -723,17 +723,17 @@ warKillBlowSetText:SetPoint("TOPLEFT", warNotificationButton, "BOTTOMLEFT", 0, -
 warKillBlowSetText:SetText("Killing Blow Tracker Reset Events")
 
 --ResetOnDeath Button
-warResetDeathButton = CreateFrame("CheckButton", "warResetDeathButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-warResetDeathButton:SetPoint("TOPLEFT", warKillBlowSetText , "BOTTOMLEFT", 20, -12);
-warResetDeathButton_GlobalNameText:SetText(" Reset on Death");
-warResetDeathButton.tooltip = "Check to have the Killing Blow Tracker reset on player death";
-warResetDeathButton:SetScript("OnClick",
+ResetOnDeathButton = CreateFrame("CheckButton", "ResetOnDeathButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
+ResetOnDeathButton:SetPoint("TOPLEFT", warKillBlowSetText , "BOTTOMLEFT", 20, -12);
+ResetOnDeathButton_GlobalNameText:SetText(" Reset on Death");
+ResetOnDeathButton.tooltip = "Check to have the Killing Blow Tracker reset on player death";
+ResetOnDeathButton:SetScript("OnClick",
   function(self)
-			local checker = warResetDeathButton:GetChecked()
+			local checker = ResetOnDeathButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				killingBlowResetDeath = true
-				warNeverResetButton:SetChecked(false)
+				NeverResetButton:SetChecked(false)
 			else
 				PlaySound(857)
 				killingBlowResetDeath = false;
@@ -741,17 +741,17 @@ warResetDeathButton:SetScript("OnClick",
 	end);
 
 --ResetOnZone Button
-warResetOnZoneButton = CreateFrame("CheckButton", "warResetOnZoneButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-warResetOnZoneButton:SetPoint("TOPLEFT", warResetDeathButton , "BOTTOMLEFT", 0, -4);
-warResetOnZoneButton_GlobalNameText:SetText(" Reset on Zone Change");
-warResetOnZoneButton.tooltip = "Check to have the Killing Blow Tracker reset on zone change";
-warResetOnZoneButton:SetScript("OnClick",
+ResetOnZoningButton = CreateFrame("CheckButton", "ResetOnZoningButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
+ResetOnZoningButton:SetPoint("TOPLEFT", ResetOnDeathButton, "BOTTOMLEFT", 0, -4);
+ResetOnZoningButton_GlobalNameText:SetText(" Reset on Zone Change");
+ResetOnZoningButton.tooltip = "Check to have the Killing Blow Tracker reset on zone change";
+ResetOnZoningButton:SetScript("OnClick",
   function(self)
-			local checker = warResetOnZoneButton:GetChecked()
+			local checker = ResetOnZoningButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				killingBlowResetZone = true
-				warNeverResetButton:SetChecked(false)
+				NeverResetButton:SetChecked(false)
 			else
 				PlaySound(857)
 				killingBlowResetZone = false
@@ -759,17 +759,17 @@ warResetOnZoneButton:SetScript("OnClick",
 	end);
 
 --ResetOnLoad Button
-warResetOnLoadButton = CreateFrame("CheckButton", "warResetOnLoadButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-warResetOnLoadButton:SetPoint("TOPLEFT", warResetOnZoneButton , "BOTTOMLEFT", 0, -4);
-warResetOnLoadButton_GlobalNameText:SetText(" Reset on Load Screens");
-warResetOnLoadButton.tooltip = "Check to have the Killing Blow Tracker reset on load screens";
-warResetOnLoadButton:SetScript("OnClick",
+ResetOnLoadButton = CreateFrame("CheckButton", "ResetOnLoadButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
+ResetOnLoadButton:SetPoint("TOPLEFT", ResetOnZoningButton, "BOTTOMLEFT", 0, -4);
+ResetOnLoadButton_GlobalNameText:SetText(" Reset on Load Screens");
+ResetOnLoadButton.tooltip = "Check to have the Killing Blow Tracker reset on load screens";
+ResetOnLoadButton:SetScript("OnClick",
   function(self)
-			local checker = warResetOnLoadButton:GetChecked()
+			local checker = ResetOnLoadButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				killingBlowResetLoad = true
-				warNeverResetButton:SetChecked(false)
+				NeverResetButton:SetChecked(false)
 			else
 				PlaySound(857)
 				killingBlowResetLoad = false
@@ -777,24 +777,24 @@ warResetOnLoadButton:SetScript("OnClick",
 	end);
 
 --NeverReset Button
-warNeverResetButton = CreateFrame("CheckButton", "warNeverResetButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-warNeverResetButton:SetPoint("TOPLEFT", warResetOnLoadButton, "BOTTOMLEFT", 0, -4);
-warNeverResetButton_GlobalNameText:SetText(" Never Reset");
-warNeverResetButton.tooltip = "Check to have the Killing Blow Tracker never reset";
-warNeverResetButton:SetScript("OnClick",
+NeverResetButton = CreateFrame("CheckButton", "NeverResetButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
+NeverResetButton:SetPoint("TOPLEFT", ResetOnLoadButton, "BOTTOMLEFT", 0, -4);
+NeverResetButton_GlobalNameText:SetText(" Never Reset");
+NeverResetButton.tooltip = "Check to have the Killing Blow Tracker never reset";
+NeverResetButton:SetScript("OnClick",
   function(self)
-			local checker = warNeverResetButton:GetChecked()
+			local checker = NeverResetButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				killingBlowResetDeath = false;
 				killingBlowResetLoad = false;
 				killingBlowResetZone = false;
-				warResetDeathButton:SetChecked(false)
-				warResetOnLoadButton:SetChecked(false)
-				warResetOnZoneButton:SetChecked(false)
+				ResetOnDeathButton:SetChecked(false)
+				ResetOnLoadButton:SetChecked(false)
+				ResetOnZoningButton:SetChecked(false)
 			else
 				PlaySound(856)
-				warNeverResetButton:SetChecked(true)
+				NeverResetButton:SetChecked(true)
 			end
 	end);
 
@@ -802,13 +802,13 @@ warNeverResetButton:SetScript("OnClick",
 
 
 --Bounty Tracking Frame Button
-warBountyFrameButton = CreateFrame("CheckButton", "warBountyFrameButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-warBountyFrameButton:SetPoint("TOPLEFT", warTrackFrameButton, "BOTTOMLEFT", 20, -12);
-warBountyFrameButton_GlobalNameText:SetText(" Display War Bounty Tracker Frame");
-warBountyFrameButton.tooltip = "Check to enable the War Mode Bounty Tracker Frame";
-warBountyFrameButton:SetScript("OnClick",
+BountiesFrameButton = CreateFrame("CheckButton", "BountiesFrameButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
+BountiesFrameButton:SetPoint("TOPLEFT", warTrackFrameButton, "BOTTOMLEFT", 20, -12);
+BountiesFrameButton_GlobalNameText:SetText(" Display War Bounty Tracker Frame");
+BountiesFrameButton.tooltip = "Check to enable the War Mode Bounty Tracker Frame";
+BountiesFrameButton:SetScript("OnClick",
   function(self)
-			local checker = warBountyFrameButton:GetChecked()
+			local checker = BountiesFrameButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.warBountiesState = true;
@@ -823,27 +823,27 @@ warBountyFrameButton:SetScript("OnClick",
 	end);
 
 --lock war frame button
-lockWarFrameButton = CreateFrame("CheckButton", "lockWarFrameButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-lockWarFrameButton:SetPoint("TOPLEFT", warBountyFrameButton, "BOTTOMLEFT", 0, -12);
-lockWarFrameButton_GlobalNameText:SetText(" Lock War Mode Tracker Frame");
-lockWarFrameButton.tooltip = "Check to lock the War Mode Tracker Frame in place";
-lockWarFrameButton:SetScript("OnClick",
+LockFramesButton = CreateFrame("CheckButton", "LockFramesButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
+LockFramesButton:SetPoint("TOPLEFT", BountiesFrameButton, "BOTTOMLEFT", 0, -12);
+LockFramesButton_GlobalNameText:SetText(" Lock War Mode Tracker Frame");
+LockFramesButton.tooltip = "Check to lock the War Mode Tracker Frame in place";
+LockFramesButton:SetScript("OnClick",
   function(self)
-			local checker = lockWarFrameButton:GetChecked()
+			local checker = LockFramesButton:GetChecked()
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.lockFrameState = true;
-				showLockFrameState(FrameStates.lockFrameState);
+				SetFramesInteractable(FrameStates.lockFrameState);
 			else
 				PlaySound(857) -- Check Unclick Sound
 				FrameStates.lockFrameState = false;
-				showLockFrameState(FrameStates.lockFrameState);
+				SetFramesInteractable(FrameStates.lockFrameState);
 			end
 	end);
 
 	--Hide in Combat frame button
 HideWarCombatButton = CreateFrame("CheckButton", "HideWarCombatButton_GlobalName", warTrackOptions, "ChatConfigCheckButtonTemplate");
-HideWarCombatButton:SetPoint("TOPLEFT", lockWarFrameButton, "BOTTOMLEFT", 0, -12);
+HideWarCombatButton:SetPoint("TOPLEFT", LockFramesButton, "BOTTOMLEFT", 0, -12);
 HideWarCombatButton_GlobalNameText:SetText(" Hide Frames in Combat");
 HideWarCombatButton.tooltip = "Check to hide the War Mode Tracker Frames when in combat";
 HideWarCombatButton:SetScript("OnClick",
@@ -915,11 +915,11 @@ logoWarFrameButton:SetScript("OnClick",
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.logoState = true;
-				showWarLogo(FrameStates.logoState);
+				ShowFactionBanner(FrameStates.logoState);
 			else
 				PlaySound(857) -- Check Unclick Sound
 				FrameStates.logoState = false;
-				showWarLogo(FrameStates.logoState);
+				ShowFactionBanner(FrameStates.logoState);
 			end
 	end);
 
@@ -953,11 +953,11 @@ pvpWarLvlButton:SetScript("OnClick",
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.warPvPState = true;
-				showWarPvPLevel(FrameStates.warPvPState);
+				ShowPvPLevel(FrameStates.warPvPState);
 			else
 				PlaySound(857) -- Check Unclick Sound
 				FrameStates.warPvPState = false;
-				showWarPvPLevel(FrameStates.warPvPState);
+				ShowPvPLevel(FrameStates.warPvPState);
 			end
 	end);
 
@@ -972,11 +972,11 @@ warKillsButton:SetScript("OnClick",
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.currKillState = true;
-				showWarCurrKill(FrameStates.currKillState);
+				ShowCurrentKills(FrameStates.currKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
 				FrameStates.currKillState = false;
-				showWarCurrKill(FrameStates.currKillState);
+				ShowCurrentKills(FrameStates.currKillState);
 			end
 	end);
 
@@ -991,11 +991,11 @@ lastKillsButton:SetScript("OnClick",
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.lastKillState = true;
-				showWarLastKill(FrameStates.lastKillState);
+				ShowLastKill(FrameStates.lastKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
 				FrameStates.lastKillState = false;
-				showWarLastKill(FrameStates.lastKillState);
+				ShowLastKill(FrameStates.lastKillState);
 			end
 	end);
 
@@ -1010,11 +1010,11 @@ highestKillsButton:SetScript("OnClick",
 			if checker then
 				PlaySound(856) -- Check Click Sound
 				FrameStates.highestWarKillState = true;
-				showWarHighestKill(FrameStates.highestWarKillState);
+				ShowHighestKills(FrameStates.highestWarKillState);
 			else
 				PlaySound(857) -- Check Unclick Sound
 				FrameStates.highestWarKillState = false;
-				showWarHighestKill(FrameStates.highestWarKillState);
+				ShowHighestKills(FrameStates.highestWarKillState);
 			end
 	end);
 
@@ -1142,11 +1142,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warTextR = (val / 100);
-		setWarTextColor()
+		SetFrameTextColors()
 		self:ClearFocus()
 	else
 	warTextR = 100;
-	setWarTextColor()
+	SetFrameTextColors()
 	self:SetText(100)
 	end
 end)
@@ -1167,11 +1167,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warTextG = (val / 100);
-		setWarTextColor()
+		SetFrameTextColors()
 		self:ClearFocus()
 	else
 	warTextG = 100;
-	setWarTextColor()
+	SetFrameTextColors()
 	self:SetNumber(100)
 	end
 end)
@@ -1192,11 +1192,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warTextB = (val / 100);
-		setWarTextColor()
+		SetFrameTextColors()
 		self:ClearFocus()
 	else
 	warTextB = 100;
-	setWarTextColor()
+	SetFrameTextColors()
 	self:SetNumber(100)
 	end
 end)
@@ -1218,11 +1218,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warFrameR = (val / 100);
-		warTrackFrameSet()
+		SetFrameBackgrounds()
 		self:ClearFocus()
 	else
 	warFrameR = (100 / 10);
-	warTrackFrameSet()
+	SetFrameBackgrounds()
 	self:SetNumber(100)
 	end
 end)
@@ -1243,11 +1243,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warFrameG = (val / 100);
-		warTrackFrameSet()
+		SetFrameBackgrounds()
 		self:ClearFocus()
 	else
 	warFrameG = (100 / 10);
-	warTrackFrameSet()
+	SetFrameBackgrounds()
 	self:SetNumber(100)
 	end
 end)
@@ -1268,11 +1268,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warFrameB = (val / 100);
-		warTrackFrameSet()
+		SetFrameBackgrounds()
 		self:ClearFocus()
 	else
 	warFrameB = (100 / 10);
-	warTrackFrameSet()
+	SetFrameBackgrounds()
 	self:SetNumber(100)
 	end
 end)
@@ -1293,11 +1293,11 @@ end)
 	local val = self:GetNumber()
 	if (val <= 100) then
 		warFrameTransparency = (val / 100);
-		warTrackFrameSet()
+		SetFrameBackgrounds()
 		self:ClearFocus()
 	else
 	warFrameTransparency = (100 / 10);
-	warTrackFrameSet()
+	SetFrameBackgrounds()
 	self:SetNumber(100)
 	end
 end)
@@ -1359,8 +1359,8 @@ warTrackOptions.okay = function(self)
 	warFrameTransparency = (warFrameAVal / 100);
 	warFrameABox:ClearFocus()
 
-	warTrackFrameSet()
-	setWarTextColor()
+	SetFrameBackgrounds()
+	SetFrameTextColors()
 end
 
 --SLASH COMMANDS
@@ -1384,15 +1384,15 @@ local function WMTSlashCommands(cmd, editbox)
 	if (string.lower(cmd) == "on") then
 		print("|cffffff00 War Mode Tracker is now ON |r")
 		SetWMTStatus(true)
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "off") then
 		print("|cffffff00 War Mode Tracker is now OFF |r")
 		SetWMTStatus(false)
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "lock") then
@@ -1403,8 +1403,8 @@ local function WMTSlashCommands(cmd, editbox)
 			print("|cffffff00 WMT Lock Status: LOCKED |r")
 			FrameStates.lockFrameState = true
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 	end
 	if(string.lower(cmd) == "hide in combat") then
 		if(warHideCombatState == false) then
@@ -1414,8 +1414,8 @@ local function WMTSlashCommands(cmd, editbox)
 			print("|cffffff00 WMT Hide in Combat Status: INACTIVE |r")
 			warHideCombatState = false
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 	end
 	if(string.lower(cmd) == "hide in pve") then
 		if(warHidePvPState == false) then
@@ -1426,8 +1426,8 @@ local function WMTSlashCommands(cmd, editbox)
 			warHidePvPState = false
 			WarGhostFrame:Show()
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 	end
 	if(string.lower(cmd) == "main frame") then
 		if(FrameStates.MainFrame == true) then
@@ -1437,8 +1437,8 @@ local function WMTSlashCommands(cmd, editbox)
 			print("|cffffff00 WMT Main Frame Status: ACTIVE |r")
 			FrameStates.MainFrame = true
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "bounty frame") then
@@ -1449,8 +1449,8 @@ local function WMTSlashCommands(cmd, editbox)
 			FrameStates.warBountiesState = true
 			print("|cffffff00 WMT Bounty Frame Status: ACTIVE |r")
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "cache frame") then
@@ -1461,8 +1461,8 @@ local function WMTSlashCommands(cmd, editbox)
 			print("|cffffff00 WMT Cache Frame Status: ACTIVE |r")
 			cacheTrackerState = true
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 		AdjustCacheFramePos()
 	end
 	if(string.lower(cmd) == "notify message") then
@@ -1474,8 +1474,8 @@ local function WMTSlashCommands(cmd, editbox)
 			print("|cffffff00 WMT Notification Messages Status: ACTIVE |r")
 			showWarTrackWarningNotification = true
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 	end
 	if(string.lower(cmd) == "notify sound") then
 		if(showWarTrackWarningNotification == true) then
@@ -1489,8 +1489,8 @@ local function WMTSlashCommands(cmd, editbox)
 		else
 			print("Cannot turn the WMT Notification Sound on while the Notification Messages are disabled")
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 	end
 	if(string.lower(cmd) == "general message") then
 		if(warcacheGeneral == true) then
@@ -1500,8 +1500,8 @@ local function WMTSlashCommands(cmd, editbox)
 			print("|cffffff00 WMT General Chat Notification Messages: ACTIVE |r")
 			warcacheGeneral = true
 		end
-		setWarFrameStatus()
-		setWarButtonChecks()
+		InitializeMainFrame()
+		SetSettingsButtonStates()
 	end
 	if(string.lower(cmd) == "party message") then
 			if(warcacheParty == true) then
@@ -1511,8 +1511,8 @@ local function WMTSlashCommands(cmd, editbox)
 				print("|cffffff00 WMT Party Chat Notification Messages: ACTIVE |r")
 				warcacheParty = true
 			end
-			setWarFrameStatus()
-			setWarButtonChecks()
+			InitializeMainFrame()
+			SetSettingsButtonStates()
 	end
 end
 --create the wmt slash command
@@ -1536,14 +1536,14 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		if(killingBlowResetLoad == true) then
 			totalWarKillingBlows = 0
 		end
-		warLastText:SetText("Last Kill Streak: " .. lastWarKills)
+		lastKillText:SetText("Last Kill Streak: " .. lastWarKills)
 
 		--Set the panel text
-		setWarTrackText();
+		SetTrackText();
 		--Load the text color
-		setWarTextColor();
+		SetFrameTextColors();
 		--setup the main panel background
-		warTrackFrameSet();
+		SetFrameBackgrounds();
 
 		--Set Editbox values for colors
 		blueWarBox:SetNumber(warTextB * 100)
@@ -1560,8 +1560,8 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		wmtScaleEditbox:SetText(string.sub(wmtFrameScale, 1, 4))
 		wmtScaleEditbox:SetCursorPosition(0)
 
-		setWarFrameStatus() -- set the show status of the frames and elements
-		setWarButtonChecks() -- set the button check statuses
+		InitializeMainFrame() -- set the show status of the frames and elements
+		SetSettingsButtonStates() -- set the button check statuses
 
 		--ajust the frames as needed
 		AdjustCacheFramePos()
@@ -1579,7 +1579,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		if(killingBlowResetDeath == true) then
 			totalWarKillingBlows = 0
 		end
-		setWarTrackText()
+		SetTrackText()
 	end
 	if (event == "PLAYER_PVP_KILLS_CHANGED") then
 		totalWarKills = GetPVPLifetimeStats();
@@ -1589,7 +1589,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 			highestWarKills = warKills
 		end
 		pvpWarRank = UnitHonorLevel("player");
-		setWarTrackText()
+		SetTrackText()
 		warTrackFrame:UnregisterEvent("PLAYER_PVP_KILLS_CHANGED");
 	end
 	if (event == "VIGNETTES_UPDATED") then
@@ -1604,7 +1604,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		local warUnitType = strsplit("-", destGUID)
 		if (warUnitType == "Player" and PLAYER_NAME == sourceName)then
 				totalWarKillingBlows = totalWarKillingBlows + 1
-				setWarTrackText()
+				SetTrackText()
 			end
 		end
 	end
@@ -1646,7 +1646,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 			totalWarKillingBlows = 0
 		end
 		namespace.SearchForBounties()
-		setWarTrackText()
+		SetTrackText()
 
 
 	end
@@ -1735,7 +1735,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 					currZone = string.gsub(currZone, " ", "");
 					zoneName = string.gsub(zoneName, " ", "");
 					if (tostring(currZone) == tostring(zoneName)) then
-						parseWarCacheMessage(wmtLastCacheText, arg2)
+						ParseWarCacheMessage(wmtLastCacheText, arg2)
 					end
 				end
 			end
@@ -1776,11 +1776,11 @@ warTrackFrame:SetScript("OnEvent", OnWarUpdates)
 --Also updates the notification text, elapsed is the number of seconds taken between each frame. Subtracts that from the timer and when the timer is below 0, stops displaying the text. Else text is displayed
 local reReg = CreateFrame("Frame")
 reReg:SetScript("OnUpdate", function(_, elapsed)
-isBountied()
+IsBountied()
 if (currBounty == "ACTIVE")then
 currBountyText:SetText("Bounty Status: " .. currBounty)
 	if (checkSelfNotification == true) then
-	setWMTNotificationText("A BOUNTY HAS BEEN PLACED ON YOUR HEAD", 6)
+	SetNotificationText("A BOUNTY HAS BEEN PLACED ON YOUR HEAD", 6)
 	checkSelfNotification = false
 	end
 end
@@ -1791,9 +1791,9 @@ end
 --if the notification timers are not 0, then shows the notification. If its less than 1 then it hides it. While its not 0 it subtracts from it
 if (notificationTimer ~= 0) then
 	if (notificationTimer > 1) then
-	showNotificationText()
+	ShowNotificationText()
 	else
-	hideNotificationText()
+	HideNotificationText()
 	end
 notificationTimer = notificationTimer - elapsed
 end
@@ -1850,7 +1850,7 @@ end
 
 --sets the never reset button to active is all other buttons are off.
 	if(killingBlowResetDeath == false and killingBlowResetLoad == false and killingBlowResetZone == false) then
-		warNeverResetButton:SetChecked(true)
+		NeverResetButton:SetChecked(true)
 	end
 
 end)
