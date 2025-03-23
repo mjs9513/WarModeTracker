@@ -37,12 +37,9 @@ local playerFaction = UnitFactionGroup("player");
 --Table that will store the names of every bountied enemy in the zone, later converetd to list in variable belwo
 local enemyWarBounties = {}
 
---String that will store the names of bountied enemy players
-local enemyBountyList = " "
 --timer for the notification of bounties to display on screen
 local notificationTimer = 0
---number of active bounties
-numEnemyBounties = 0
+
 --boolean used to track if the player has gained a bounty
 checkSelfNotification = true
 --Two booleans to track whether or not the text for the bounty notification, and the accompanying sound, should play
@@ -114,7 +111,7 @@ warTrackGhost:SetHeight(100)  -- sets height
 warTrackGhost:SetMovable(true)
 warTrackGhost:EnableMouse(true)
 warTrackGhost:RegisterForDrag("LeftButton")
-warTrackGhost:SetUserPlaced(isUserPlaced)
+warTrackGhost:SetUserPlaced(true)
 --allows the mouse to be moved by the mouse
 warTrackGhost:SetScript("OnDragStart", warTrackGhost.StartMoving)
 warTrackGhost:SetScript("OnDragStop", warTrackGhost.StopMovingOrSizing)
@@ -132,9 +129,8 @@ warBountiesFrame = CreateFrame("Frame", "WarBountiesFrame", UIParent, "BackdropT
 warBountiesFrame:SetFrameStrata("BACKGROUND")
 warBountiesFrame:SetWidth(208) -- sets the width
 warBountiesFrame:SetHeight(75) -- sets the height
-warBountiesFrame:SetMovable(true)
+warBountiesFrame:SetMovable(false)
 warBountiesFrame:EnableMouse(true)
-warBountiesFrame:SetUserPlaced(isUserPlaced)
 warBountiesFrame:SetPoint("BOTTOM", warTrackFrame, "BOTTOM", 0, -73) -- the y value was -86 before the addition of the killing blow tracker
 
 --CREATE THE FRAME FOR WAR CACHE NOTICIATION
@@ -142,9 +138,8 @@ warCacheFrame = CreateFrame("Frame", "WarCacheFrame", UIParent, "BackdropTemplat
 warCacheFrame:SetFrameStrata("BACKGROUND")
 warCacheFrame:SetWidth(208) -- sets the width
 warCacheFrame:SetHeight(35) -- sets the height
-warCacheFrame:SetMovable(true)
+warCacheFrame:SetMovable(false)
 warCacheFrame:EnableMouse(true)
-warCacheFrame:SetUserPlaced(isUserPlaced)
 
 --adjust the frames such that the war cache frame snaps down to the bounty frames
 --uses the GhostFrame to enable continuous movement
@@ -437,81 +432,6 @@ function AdjustWMTChannelPos()
 	end
 end
 
---function for searching for bounties in an area, gets the info then uses the objectID from the Vignettes to get the name of the bountied players.
---C_VignetteInfo.GetVignettes() gives info on all bounties in a zone. Also stores the names from the table to the string
---the bottom if statement also sets the text for the notification if a new enemy bounty has appeared based on the list of enemy bounties changing
-function searchForBounties()
---_,vignetteGUID gets the GUID of the vignette. the _, is for the index, its a throwaway value. Just 1, 2, 3, etc.
-if(warShowStates.warBountiesState == true)then
-		local enemyBountyNames = {}
-		enemyBountyList = " "
-		for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes()) do
-			local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID)
-			--ATEMPT TO INDEX A NILL VALUE, LINE 349 "vignetteInfo" - Fixed
-			if (vignetteInfo ~= nil and vignetteInfo.type ~= nil) then
-				if vignetteInfo.type == 1 then
-					local _, bountyClass, _, _, _, bountyName, _ = GetPlayerInfoByGUID(vignetteInfo.objectGUID)
-					if (bountyName ~= nil) then
-						if(bountyClass ~= nil) then
-							local coloredBounty
-							if(bountyClass == "DEATHKNIGHT") then
-								coloredBounty = "|cFFC41F3B" .. bountyName .. "|r"
-							end
-							if(bountyClass == "WARRIOR") then
-								coloredBounty = "|cFFC79C6E" .. bountyName .. "|r"
-							end
-							if(bountyClass == "PALADIN") then
-								coloredBounty = "|cFFF58CBA" .. bountyName .. "|r"
-							end
-							if(bountyClass == "HUNTER") then
-								coloredBounty = "|cFFABD473" .. bountyName .. "|r"
-							end
-							if(bountyClass == "ROGUE") then
-								coloredBounty = "|cFFFFF569" .. bountyName .. "|r"
-							end
-							if(bountyClass == "PRIEST") then
-								coloredBounty = "|cFFFFFFFF" .. bountyName .. "|r"
-							end
-							if(bountyClass == "SHAMAN") then
-								coloredBounty = "|cFF0070DE" .. bountyName .. "|r"
-							end
-							if(bountyClass == "MAGE") then
-								coloredBounty = "|cFF40C7EB" .. bountyName .. "|r"
-							end
-							if(bountyClass == "WARLOCK") then
-								coloredBounty = "|cFF8787ED" .. bountyName .. "|r"
-							end
-							if(bountyClass == "MONK") then
-								coloredBounty = "|cFF00FF96" .. bountyName .. "|r"
-							end
-							if(bountyClass == "DRUID") then
-								coloredBounty = "|cFFFF7D0A" .. bountyName .. "|r"
-							end
-							if(bountyClass == "DEMONHUNTER") then
-								coloredBounty = "|cFFA330C9" .. bountyName .. "|r"
-							end
-							table.insert(enemyBountyNames, coloredBounty)
-						else
-							table.insert(enemyBountyNames, bountyName)
-						end
-					end
-				end
-			end
-		end
-		enemyWarBounties = enemyBountyNames
-		for i = 1,table.getn(enemyWarBounties),1 do
-			enemyBountyList = enemyBountyList .. " " .. tostring(enemyWarBounties[i].. ",")
-		end
-		if (table.getn(enemyBountyNames) > numEnemyBounties) then
-			setWMTNotificationText("A NEW ENEMY BOUNTY HAS APPEARED", 6)
-			numEnemyBounties = table.getn(enemyBountyNames)
-			else
-			numEnemyBounties = table.getn(enemyBountyNames)
-		end
-		setWarTrackText()
-	end
-end
-
 --reads in and parses the War Cache Messages. If nil values, sets to 0s and throw aways
 --if the zones are different, its a new war chest and updates appropriately
 --if the location is 15 different in X or Y, its a new chest and updates it
@@ -580,14 +500,14 @@ warHonorLvlText:SetText("Lvl ".. pvpWarRank)
 warTotalKillingBlowsText:SetText("Killing Blows: " .. totalWarKillingBlows)
 	if(active_items(enemyWarBounties) ~= nil and active_items(enemyWarBounties) ~= 0) then
 		currNumEnemyBounties:SetText("Active Enemy Bounties: " .. active_items(enemyWarBounties))
-		playerBountiesText:SetText(enemyBountyList)
+		playerBountiesText:SetText(namespace.enemyBountyList)
 		--set the bounties frame to the natural height and location
 		AdjustCacheFramePos()
 		warBountiesFrame:SetHeight(75)
 		enemyBountiesText:Show()
 		else
 		currNumEnemyBounties:SetText("Active Enemy Bounties: 0")
-		playerBountiesText:SetText(enemyBountyList)
+		playerBountiesText:SetText(namespace.enemyBountyList)
 		--no enemy bounties, shrink the frame
 		warBountiesFrame:SetHeight(20)
 		if(warShowStates.warFrameState == false and warShowStates.warBountiesState == true) then
@@ -646,21 +566,21 @@ end
 
 function SetWMTStatus(status)
 	if(status == true or status == false or status == 1 or status == 0) then
-			warShowStates.warFrameState = status
-			warShowStates.currKillState = status
-			warShowStates.lastKillState = status
-			warShowStates.highestWarKillState = status
-			warShowStates.currBountyState = status
-			warShowStates.totalKillState = status
-			warShowStates.logoState = status
+		  warShowStates.warFrameState = status
+		  warShowStates.currKillState = status
+		  warShowStates.lastKillState = status
+		  warShowStates.highestWarKillState = status
+		  warShowStates.currBountyState = status
+		  warShowStates.totalKillState = status
+		  warShowStates.logoState = status
 		  warShowStates.warPvPState = status
-			warShowStates.warBountiesState = status
-			killingBlowState = status
-			cacheTrackerState = status
-			showWarTrackWarningNotification = status
-			playWarTrackWarningNotification = status
-			warcacheParty = status
-			warcacheGeneral = status
+		  warShowStates.warBountiesState = status
+		  killingBlowState = status
+		  cacheTrackerState = status
+		  showWarTrackWarningNotification = status
+		  playWarTrackWarningNotification = status
+		  warcacheParty = status
+		  warcacheGeneral = status
 		else
 			print("An error occured in setting the WMT status")
 		end
@@ -669,7 +589,10 @@ end
 --Creat the options panel frame
 local warTrackOptions = CreateFrame("Frame")
 warTrackOptions.name = addOnName
-InterfaceOptions_AddCategory(warTrackOptions)
+--InterfaceOptions_AddCategory(warTrackOptions)
+category, layout = Settings.RegisterCanvasLayoutCategory(warTrackOptions, warTrackOptions.name, warTrackOptions.name);
+category.ID = warTrackOptions.name
+Settings.RegisterAddOnCategory(category);
 
 --Add the addon title to the options panel
 local title = warTrackOptions:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
@@ -1162,7 +1085,7 @@ getglobal(wmtScaleSlider:GetName() .. 'Low'):SetText('.5'); --Sets the left-side
 getglobal(wmtScaleSlider:GetName() .. 'High'):SetText('2'); --Sets the right-side slider text
 wmtScaleSlider:SetValueStep(.01)
 wmtScaleSlider:SetMinMaxValues(.5, 2)
-wmtScaleSlider:SetObeyStepOnDrag(obeyStep)
+wmtScaleSlider:SetObeyStepOnDrag(true)
 wmtScaleSlider:SetValue(wmtFrameScale)
 
 --Creating editbox to show number for the slider
@@ -1645,7 +1568,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		--register the wmt prefix
 		wmtPrefCheck = C_ChatInfo.RegisterAddonMessagePrefix("wmt:")
 		AdjustWMTChannelPos()
-		searchForBounties()
+		namespace.SearchForBounties()
 	end
 	if (event == "PLAYER_DEAD") then
 		if (highestWarKills < warKills) then
@@ -1670,7 +1593,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		warTrackFrame:UnregisterEvent("PLAYER_PVP_KILLS_CHANGED");
 	end
 	if (event == "VIGNETTES_UPDATED") then
-	searchForBounties()
+	namespace.SearchForBounties()
 --	setWarTrackText()
 	end
 
@@ -1722,7 +1645,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		if(killingBlowResetZone == true) then
 			totalWarKillingBlows = 0
 		end
-		searchForBounties()
+		namespace.SearchForBounties()
 		setWarTrackText()
 
 
@@ -1746,7 +1669,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	end
 
 
-	if(event=="CURSOR_UPDATE") then
+	if(event=="CURSOR_CHANGED") then
 		local testText = _G["GameTooltipTextLeft"..1]
 		local textExtractor = testText:GetText()
 			if(textExtractor == "War Supply Chest" or textExtractor == "Secret Supply Chest" or textExtractor == "War Supply Crate") then
@@ -1844,7 +1767,7 @@ warTrackFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 warTrackFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 warTrackFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 warTrackFrame:RegisterEvent("ZONE_CHANGED")
-warTrackFrame:RegisterEvent("CURSOR_UPDATE")
+warTrackFrame:RegisterEvent("CURSOR_CHANGED")
 warTrackFrame:RegisterEvent("CHAT_MSG_ADDON")
 warTrackFrame:RegisterEvent("CHANNEL_UI_UPDATE")
 warTrackFrame:SetScript("OnEvent", OnWarUpdates)
