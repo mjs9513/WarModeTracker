@@ -73,6 +73,11 @@ function namespace.SearchForBounties()
         else
             namespace.numEnemyBounties = table.getn(enemyBountyNames)
         end
-        SetTrackText()
+        namespace.SetTrackerTexts()
     end
+end
+
+--returns the number of items within a 'source' table, TEST FUNCTION
+function namespace.GetActiveItems(source)
+    return table.getn(source);
 end

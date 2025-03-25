@@ -3,12 +3,12 @@
 ## Notes: A simple addon for tracking kills in War Mode PvP
 ## Author: SGCelerrimus
 ## Version: 2.0.0
-## SavedVariablesPerCharacter: lastWarKills, warKills, highestWarKills, warTextR, warTextB, warTextG, pvpWarRank, FrameStates, warFrameTransparency, warFrameR, warFrameG, warFrameB, showWarTrackWarningNotification, playWarTrackWarningNotification, warHidePvPState, warHideCombatState, killingBlowResetZone, killingBlowResetDeath, killingBlowResetLoad, totalWarKillingBlows, killingBlowState, cacheTrackerState, warcacheParty, warcacheGeneral, wmtFrameScale
+## SavedVariablesPerCharacter: lastWarKills, warKills, highestWarKills, WarTextR, WarTextB, WarTextG, pvpWarRank, FrameStates, WarFrameTransparency, WarFrameR, WarFrameG, WarFrameB, showWarTrackWarningNotification, playWarTrackWarningNotification, warHidePvPState, warHideCombatState, killingBlowResetZone, killingBlowResetDeath, killingBlowResetLoad, totalWarKillingBlows, killingBlowState, cacheTrackerState, warcacheParty, warcacheGeneral, WMTFrameScale
 
 GlobalVariables.lua
+WarModeFrames.lua
 OptionsPanel.lua
 SlashCommands.lua
 Notifications.lua
-WarModeFrames.lua
 GlobalUtils.lua
 main.lua
