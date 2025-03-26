@@ -68,7 +68,7 @@ function namespace.SearchForBounties()
             namespace.enemyBountyList = namespace.enemyBountyList .. " " .. tostring(enemyWarBounties[i].. ",")
         end
         if (table.getn(enemyBountyNames) > namespace.numEnemyBounties) then
-            SetNotificationText("A NEW ENEMY BOUNTY HAS APPEARED", 6)
+            namespace.SetNotificationText("A NEW ENEMY BOUNTY HAS APPEARED", 6)
             namespace.numEnemyBounties = table.getn(enemyBountyNames)
         else
             namespace.numEnemyBounties = table.getn(enemyBountyNames)
@@ -80,4 +80,19 @@ end
 --returns the number of items within a 'source' table, TEST FUNCTION
 function namespace.GetActiveItems(source)
     return table.getn(source);
+end
+
+
+--Checks if the player is bountied. AuraUtil.FindAuraByName searches the player for a specified buff/debuff. Third parameter is the filter (one string separated by spaces), its very specific
+--also sets checkSelfNotification to true if they dont have a bounty so the addon re-checks for the next bounty occurence
+function namespace.IsBountied()
+    hasBounty = AuraUtil.FindAuraByName("Bounty Hunted", "player", "NOT_CANCELABLE HARMFUL")
+    if (hasBounty ~= nil) then
+        namespace.CurrentBountyStatus = "ACTIVE"
+        return true;
+    else
+        namespace.CurrentBountyStatus = "INACTIVE"
+        namespace.CanAlertBountied = true
+        return false;
+    end
 end

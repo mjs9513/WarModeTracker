@@ -41,7 +41,7 @@ WarCacheFrame:EnableMouse(true)
 
 --adjust the frames such that the war cache frame snaps down to the bounty frames
 --uses the GhostFrame to enable continuous movement
-function AdjustCacheFramePos()
+function namespace.AdjustCacheFramePos()
     if(FrameStates.MainFrame == true) then
         WarCacheFrame:SetPoint("Center", warTrackFrame, "Center", 0, 65)
         if(namespace.GetActiveItems(namespace.EnemyWarBounties) ~= nil and namespace.GetActiveItems(namespace.EnemyWarBounties) ~= 0) then
@@ -284,14 +284,14 @@ function namespace.SetTrackerTexts()
     namespace.HighestEnemiesText:SetText("Highest Streak: " .. HighestWarKills)
     namespace.LastKillText:SetText("Last Kill Streak: " .. LastWarKills)
     namespace.WarEnemiesText:SetText("Enemies Slain: " .. WarKills)
-    namespace.CurrBountyText:SetText("Bounty Status: " .. _currBountyStatus)
+    namespace.CurrBountyText:SetText("Bounty Status: " .. namespace.CurrentBountyStatus)
     namespace.WarHonorLvlText:SetText("Lvl ".. PvpWarRank)
     namespace.WarTotalKillingBlowsText:SetText("Killing Blows: " .. TotalWarKillingBlows)
     if(namespace.GetActiveItems(namespace.EnemyWarBounties) ~= nil and namespace.GetActiveItems(namespace.EnemyWarBounties) ~= 0) then
         namespace.CurrNumEnemyBounties:SetText("Active Enemy Bounties: " .. namespace.GetActiveItems(namespace.EnemyWarBounties))
         namespace.PlayerBountiesText:SetText(namespace.EnemyBountyList)
         --set the bounties frame to the natural height and location
-        AdjustCacheFramePos()
+        namespace.AdjustCacheFramePos()
         WarBountiesFrame:SetHeight(75)
         namespace.EnemyBountiesText:Show()
     else
@@ -300,7 +300,7 @@ function namespace.SetTrackerTexts()
         --no enemy bounties, shrink the frame
         WarBountiesFrame:SetHeight(20)
         if(FrameStates.MainFrame == false and FrameStates.warBountiesState == true) then
-            AdjustCacheFramePos()
+            namespace.AdjustCacheFramePos()
         else
             WarBountiesFrame:SetPoint("BOTTOM", warTrackFrame, "BOTTOM", 0, -18)
         end

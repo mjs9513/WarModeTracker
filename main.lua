@@ -1,12 +1,16 @@
+--TODOS:
+--Create namespace.InitializeAddonMenu method
+--create method to clear war cache text, call it when zoning. Also clear war chest data when zone changes
+--Move GlobalUtils back underneath GlobalVariables, use this for stuff from the WoWAPI
+--Rename Notifications to NotificationUtils, move Addon Communication stuff to that place too
+--Create Update functions for each class in general? Treat it like OOP?
+--Create initialization method in NotificationUtils as well for initializing the wmtPrefCheck and all that
+--Try creating OOP based class objects inside of local namespace? Very securely attach to addon?
+
 local addOnName, namespace = ...
 --gets the name of the player
 local PLAYER_NAME = GetUnitName("player", false)
 
-
---stores if you have a bounty
-hasBounty = nil;
---string for bounty status
-_currBountyStatus = "INACTIVE";
 --Gets the players total honorable kills
 local lastTotalWarKills, _,_ = GetPVPLifetimeStats();
 
@@ -19,20 +23,6 @@ local _wmtCacheTimer = 0;
 
 --variable for storing the name of the last check moused over by the player
 local _warChestType = " ";
-
---Checks if the player is bountied. AuraUtil.FindAuraByName searches the player for a specified buff/debuff. Third parameter is the filter (one string separated by spaces), its very specific
---also sets checkSelfNotification to true if they dont have a bounty so the addon re-checks for the next bounty occurence
-function IsBountied()
-	hasBounty = AuraUtil.FindAuraByName("Bounty Hunted", "player", "NOT_CANCELABLE HARMFUL")
-	if (hasBounty ~= nil) then
-		_currBountyStatus = "ACTIVE"
-		return true;
-	else
-		_currBountyStatus = "INACTIVE"
-		namespace.CanAlertBountied = true
-		return false;
-	end
-end
 
 function AdjustWMTChannelPos()
 	if(GetChannelName("WMT") == 1) then
@@ -118,7 +108,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		namespace.SetSettingsButtonStates() -- set the button check statuses
 
 		--ajust the frames as needed
-		AdjustCacheFramePos()
+		namespace.AdjustCacheFramePos()
 		--register the wmt prefix
 		_wmtPrefCheck = C_ChatInfo.RegisterAddonMessagePrefix("wmt:")
 		AdjustWMTChannelPos()
@@ -328,8 +318,8 @@ warTrackFrame:SetScript("OnEvent", OnWarUpdates)
 local reReg = CreateFrame("Frame")
 reReg:SetScript("OnUpdate", function(_, elapsed)
 
-if (true)then
-	namespace.SetBountyStatus(_currBountyStatus);
+if(namespace.IsBountied() == true )then
+	namespace.SetBountyStatus(namespace.CurrentBountyStatus);
 	if (namespace.CanAlertBountied == true) then
 		namespace.SetNotificationText("A BOUNTY HAS BEEN PLACED ON YOUR HEAD", 6)
 		namespace.CanAlertBountied = false

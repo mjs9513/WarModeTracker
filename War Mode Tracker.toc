@@ -7,9 +7,9 @@
 
 GlobalVariables.lua
 WarModeFrames.lua
+GlobalUtils.lua
 OptionsPanel.lua
 SlashCommands.lua
 Notifications.lua
-GlobalUtils.lua
 WarChestTools.lua
 main.lua

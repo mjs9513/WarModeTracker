@@ -39,25 +39,29 @@ FrameStates = {
 KillingBlowState = true;
 CacheTrackerState = true;
 
---boolean used to track if the player has gained a bounty
-namespace.CanAlertBountied = true
 --Two booleans to track whether or not the text for the bounty notification, and the accompanying sound, should play
-ShowWarTrackWarningNotification = true
-PlayWarTrackWarningNotification = true
-
+ShowWarTrackWarningNotification = true;
+PlayWarTrackWarningNotification = true;
 WarcacheParty = true;
 WarcacheGeneral = false;
 --two booleans for tracking whether the window is hidden or show in combat or when not in war mode
-WarHidePvPState = false
-WarHideCombatState = false
+WarHidePvPState = false;
+WarHideCombatState = false;
+
 --Boolean for checking whether or not the player is in combat, specifically used for when hide in combat is checked and hide when not in war mode is unchecked
-namespace.WarCombatState = false
+namespace.WarCombatState = false;
+
+--string for bounty status
+namespace.CurrentBountyStatus = "INACTIVE";
+
+--boolean used to track if the player has gained a bounty
+namespace.CanAlertBountied = true;
 
 --Table that will store the names of every bountied enemy in the zone, later converetd to list in variable belwo
-namespace.EnemyWarBounties = {}
+namespace.EnemyWarBounties = {};
 
 --number of active bounties
-namespace.numEnemyBounties = 0
+namespace.numEnemyBounties = 0;
 
 --String that will store the names of bountied enemy players 
-namespace.EnemyBountyList = " "
+namespace.EnemyBountyList = " ";
