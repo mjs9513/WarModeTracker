@@ -1,6 +1,8 @@
 --Lua file representing the event notifications
 local addOnName, namespace = ...
 
+local _wmtPrefCheck;
+
 --variable for storing the timer for the War Caches
 namespace.CacheMessageCD = 0; --ToDo: make this not globally accessible. Make it accessible with getters
 
@@ -38,6 +40,16 @@ end
 --function for hiding the notification text
 function namespace.HideNotificationText()
     namespace.WarModeNotificationText:Hide()
+end
+
+function namespace.InitializeAddonMessages()
+    _wmtPrefCheck = C_ChatInfo.RegisterAddonMessagePrefix("wmt:")
+    if(GetChannelName("WMT") == 1) then
+        local numChannels = C_ChatInfo.GetNumActiveChannels();
+        for i=0,numChannels,1 do
+            C_ChatInfo.SwapChatChannelsByChannelIndex(GetChannelName("WMT"), GetChannelName("WMT")+1);
+        end
+    end
 end
 
 function namespace.UpdateNotifications(elapsed)

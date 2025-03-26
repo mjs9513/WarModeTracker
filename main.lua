@@ -1,10 +1,6 @@
 --TODOS:
---Create namespace.InitializeAddonMenu method
 --create method to clear war cache text, call it when zoning. Also clear war chest data when zone changes
---Move GlobalUtils back underneath GlobalVariables, use this for stuff from the WoWAPI
---Rename Notifications to NotificationUtils, move Addon Communication stuff to that place too
 --Create Update functions for each class in general? Treat it like OOP?
---Create initialization method in NotificationUtils as well for initializing the wmtPrefCheck and all that
 --Try creating OOP based class objects inside of local namespace? Very securely attach to addon?
 
 local addOnName, namespace = ...
@@ -16,23 +12,13 @@ local lastTotalWarKills, _,_ = GetPVPLifetimeStats();
 
 _wmtWarCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
 _wmtLastCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
-local _wmtPrefCheck;
 
 --variable for storing the name of the last check moused over by the player
 local _warChestType = " ";
 
-function AdjustWMTChannelPos()
-	if(GetChannelName("WMT") == 1) then
-		local numChannels = C_ChatInfo.GetNumActiveChannels();
-		for i=0,numChannels,1 do
-			C_ChatInfo.SwapChatChannelsByChannelIndex(GetChannelName("WMT"), GetChannelName("WMT")+1);
-		end
-	end
-end
-
 --Script fired off during events. Update style method
 local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
-	
+	--Player entering world, initialize the addon
 	if (event == "PLAYER_ENTERING_WORLD") then
 		--ToDo: Build initialize function that gets called from here, put it in main
 		--get the total honor kills and pvp rank
@@ -49,8 +35,10 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 			TotalWarKillingBlows = 0
 		end
 		
+		
+		--TODO: MOVE TO AN INITIALIZE FRAMES METHOD ON WARMODEFRAMES.LUA
+		namespace.InitializeMainFrame() -- set the show status of the frames and elements
 		namespace.SetLastKillStreakText("Last Kill Streak: " .. LastWarKills);
-
 		--Set the panel text
 		namespace.SetTrackerTexts();
 		--Load the text color
@@ -60,17 +48,14 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 
 		--Initialize the addon setting menu
 		namespace.InitializeAddonMenu();
-		
-
-		namespace.InitializeMainFrame() -- set the show status of the frames and elements
-		namespace.SetSettingsButtonStates() -- set the button check statuses
+		namespace.SetSettingsButtonStates() -- set the button check statuses. TODO: Move into initialize addon settings menu
 
 		--ajust the frames as needed
-		namespace.AdjustCacheFramePos()
+		namespace.AdjustCacheFramePos() --ToDo: look into this, can it be condensed
 		--register the wmt prefix
-		_wmtPrefCheck = C_ChatInfo.RegisterAddonMessagePrefix("wmt:")
-		AdjustWMTChannelPos()
-		namespace.SearchForBounties()
+		namespace.InitializeAddonMessages()
+		
+		namespace.SearchForBounties() --Initial kickoff call to search for bounties in the area
 	end
 	
 	if (event == "PLAYER_DEAD") then
@@ -242,14 +227,14 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		end
 
 		--when the channel_ui_upate event fires, if the number of channels the player is in is greater than 0
-		--check if they are in the WMT channel, if they aren't join, if they are disable it and unregister this event
+		--check if they are in the WMT channel, if they aren't join and initialize messages, if they are disable it and unregister this event
     if(event=="CHANNEL_UI_UPDATE") then
 			if(GetNumDisplayChannels() >= 3) then
       --join the WMT CHANNEL
 			if(GetChannelName("WMT") == 0) then
 	      JoinTemporaryChannel("WMT",nil, 4, nil)
 			end
-			AdjustWMTChannelPos();
+			namespace.InitializeAddonMessages();
 			--Check to make sure it isnt listed as the first channel, if it is make it the last one
       RemoveChatWindowChannel(0, "WMT")
       ChatFrame_RemoveChannel(DEFAULT_CHAT_FRAME, "WMT")
