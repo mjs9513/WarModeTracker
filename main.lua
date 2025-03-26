@@ -10,12 +10,6 @@ local PLAYER_NAME = GetUnitName("player", false)
 --Gets the players total honorable kills
 local lastTotalWarKills, _,_ = GetPVPLifetimeStats();
 
-_wmtWarCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
-_wmtLastCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
-
---variable for storing the name of the last check moused over by the player
-local _warChestType = " ";
-
 --Script fired off during events. Update style method
 local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	--Player entering world, initialize the addon
@@ -151,83 +145,29 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 			end
 		end
 	end
-
-
-	--TODO: Add a function to WarChestUtils to do this, and just call that witin the "CURSOR_CHANGED" event 
+	
 	if(event=="CURSOR_CHANGED") then
-		local testText = _G["GameTooltipTextLeft"..1]
-		local textExtractor = testText:GetText()
-			if(textExtractor == "War Supply Chest" or textExtractor == "Secret Supply Chest" or textExtractor == "War Supply Crate") then
-					if (CacheTrackerState == true) then
-					local posX, posY = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
-					posX = math.floor(posX * 100)
-					posY = math.floor(posY * 100)
-					local zoneName = GetZoneText()
-					_wmtWarCacheText = "War Cache Located - " .. posX ..  " - " .. posY .. " - " .. zoneName;
-					_warChestType = textExtractor;
-					textExtractor = " "
+		--Call the scan for chests function from WarChestTools
+		namespace.ScanForChests();
+	end
+	
+	--if the client sees a message with wmt, process that message and update accordingly
+	if (event=="CHAT_MSG_ADDON") then
+		if (arg1 == "wmt:") then
+			if (CacheTrackerState == true) then
+				local message, locX, locY, zoneName = strsplit("-", arg2)
+				local currZone = GetZoneText()
+				currZone = string.gsub(currZone, " ", "");
+				zoneName = string.gsub(zoneName, " ", "");
+				if (tostring(currZone) == tostring(zoneName)) then
+					namespace.ParseWarCacheMessage(_wmtLastCacheText, arg2)
 				end
 			end
 		end
---if the messages are inconsistent with each other
-		if(_wmtLastCacheText ~= _wmtWarCacheText) then
-				if (CacheTrackerState == true) then
-				local posX, posY = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
-				posX = math.floor(posX * 100)
-				posY = math.floor(posY * 100)
-				local id,channelName = GetChannelName("WMT")
-        if (id > 0 and channelName ~= nil and namespace.GetNotificationTimer() <= 0) then
-        C_ChatInfo.SendAddonMessage("wmt:", _wmtWarCacheText, "CHANNEL", id)
-        C_ChatInfo.SendAddonMessage("wmt:", _wmtWarCacheText, "RAID")
-        end
-        --IF THE USER CURRENTLY DOES NOT HAVE AN ACTIVE WAR CHEST LOADED IN THEIR FRAME
-        if (namespace.WarCacheText:GetText() == "NO ACTIVE WAR CHESTS") then
-					--if they set to notify party, notify party on the mouseover
-					if(WarcacheParty == true) then
-	          if (IsInRaid()) then
-	            SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "RAID")
-	          else
-	            if (IsInGroup()) then
-	              SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "PARTY")
-	            end
-	          end
-					end
-					--if set to notify general, notify general on the mouseover
-					if(WarcacheGeneral == true) then
-						local wmtChatIndex = GetChannelName("General")
-						local wmtChatNewIndex = GetChannelName("General - " .. GetZoneText())
-						if (wmtChatIndex~=nil and wmtChatIndex ~= 0) then
-							SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "CHANNEL", nil, wmtChatIndex)
-						else
-							if(wmtChatNewIndex ~= nil) then
-								SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "CHANNEL", nil, wmtChatNewIndex)
-							end
-						end
-
-					end
-        end
-				_wmtLastCacheText = _wmtWarCacheText
-				namespace.WarCacheText:SetText("War Chest Spotted Near: " .. posX .. ", " .. posY)
-				namespace.CacheMessageCD = 200
-			end
-		end
-		--if the client sees a message with wmt, process that message and update accordingly
-		if (event=="CHAT_MSG_ADDON") then
-			if (arg1 == "wmt:") then
-				if (CacheTrackerState == true) then
-					local message, locX, locY, zoneName = strsplit("-", arg2)
-					local currZone = GetZoneText()
-					currZone = string.gsub(currZone, " ", "");
-					zoneName = string.gsub(zoneName, " ", "");
-					if (tostring(currZone) == tostring(zoneName)) then
-						namespace.ParseWarCacheMessage(_wmtLastCacheText, arg2)
-					end
-				end
-			end
-		end
-
-		--when the channel_ui_upate event fires, if the number of channels the player is in is greater than 0
-		--check if they are in the WMT channel, if they aren't join and initialize messages, if they are disable it and unregister this event
+	end
+	
+	--when the channel_ui_upate event fires, if the number of channels the player is in is greater than 0
+	--check if they are in the WMT channel, if they aren't join and initialize messages, if they are disable it and unregister this event
     if(event=="CHANNEL_UI_UPDATE") then
 			if(GetNumDisplayChannels() >= 3) then
       --join the WMT CHANNEL
