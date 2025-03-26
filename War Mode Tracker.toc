@@ -11,5 +11,6 @@ GlobalUtils.lua
 OptionsPanel.lua
 SlashCommands.lua
 NotificationUtils.lua
+PvPTools.lua
 WarChestTools.lua
 main.lua

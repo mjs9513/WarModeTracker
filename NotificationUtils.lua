@@ -86,7 +86,7 @@ function namespace.ParseAddonMessage(arg1, arg2)
             currZone = string.gsub(currZone, " ", "");
             zoneName = string.gsub(zoneName, " ", "");
             if (tostring(currZone) == tostring(zoneName)) then
-                namespace.ParseWarCacheMessage(_wmtLastCacheText, arg2)
+                ParseWarCacheMessage(_wmtLastCacheText, arg2)
             end
         end
     end

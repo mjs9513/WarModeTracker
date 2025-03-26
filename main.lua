@@ -97,14 +97,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	end
 
 	if (event=="COMBAT_LOG_EVENT_UNFILTERED") then
-	local _,warEventType, _, sourceGUID, sourceName, _, _, destGUID, destName, _, _ = CombatLogGetCurrentEventInfo()
-		if(warEventType=="PARTY_KILL") then
-		local warUnitType = strsplit("-", destGUID)
-		if (warUnitType == "Player" and PLAYER_NAME == sourceName)then
-				TotalWarKillingBlows = TotalWarKillingBlows + 1
-				namespace.SetTrackerTexts()
-			end
-		end
+		namespace.CheckForKillingBlows();
 	end
 	
 	if (event=="PLAYER_REGEN_DISABLED") then
