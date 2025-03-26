@@ -6,12 +6,9 @@ local PLAYER_NAME = GetUnitName("player", false)
 --stores if you have a bounty
 hasBounty = nil;
 --string for bounty status
-currBounty = "INACTIVE";
+_currBountyStatus = "INACTIVE";
 --Gets the players total honorable kills
 local lastTotalWarKills, _,_ = GetPVPLifetimeStats();
-
---timer for the notification of bounties to display on screen
-local notificationTimer = 0
 
 _wmtWarCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
 _wmtLastCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
@@ -28,11 +25,11 @@ local _warChestType = " ";
 function IsBountied()
 	hasBounty = AuraUtil.FindAuraByName("Bounty Hunted", "player", "NOT_CANCELABLE HARMFUL")
 	if (hasBounty ~= nil) then
-		currBounty = "ACTIVE"
+		_currBountyStatus = "ACTIVE"
 		return true;
 	else
-		currBounty = "INACTIVE"
-		CheckSelfNotification = true
+		_currBountyStatus = "INACTIVE"
+		namespace.CanAlertBountied = true
 		return false;
 	end
 end
@@ -73,7 +70,7 @@ function ParseWarCacheMessage(oldCache, newCache)
 	 	_wmtWarCacheText = newCache
 		namespace.WarCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
 		_wmtCacheTimer = 200
-		SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
+		namespace.SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
 		return true;
 	end
 	if (((tonumber(newX) >= tonumber(oldX) + 15) or (tonumber(newX) <= tonumber(oldX) - 15)) or ((tonumber(newY) >= tonumber(oldY) + 15) or (tonumber(newY) <= tonumber(oldY) - 15))) then
@@ -81,13 +78,14 @@ function ParseWarCacheMessage(oldCache, newCache)
 		_wmtWarCacheText = newCache
 		namespace.WarCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
 		_wmtCacheTimer = 200
-		SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
+		namespace.SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
 		return true;
 	end
 end
 
 --Script fired off during events. Primary purpose is to set variables/text
 local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
+	
 	if (event == "PLAYER_ENTERING_WORLD") then
 		--get the total honor kills and pvp rank
 		TotalWarKills = GetPVPLifetimeStats();
@@ -116,8 +114,8 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		namespace.InitializeAddonMenu();
 		
 
-		InitializeMainFrame() -- set the show status of the frames and elements
-		SetSettingsButtonStates() -- set the button check statuses
+		namespace.InitializeMainFrame() -- set the show status of the frames and elements
+		namespace.SetSettingsButtonStates() -- set the button check statuses
 
 		--ajust the frames as needed
 		AdjustCacheFramePos()
@@ -126,6 +124,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		AdjustWMTChannelPos()
 		namespace.SearchForBounties()
 	end
+	
 	if (event == "PLAYER_DEAD") then
 		if (HighestWarKills < WarKills) then
 			HighestWarKills = WarKills
@@ -148,11 +147,11 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		namespace.SetTrackerTexts()
 		warTrackFrame:UnregisterEvent("PLAYER_PVP_KILLS_CHANGED");
 	end
+	
 	if (event == "VIGNETTES_UPDATED") then
-	namespace.SearchForBounties()
---	setWarTrackText()
+		namespace.SearchForBounties()
+		--ToDo: Check for WarCache spawning?
 	end
-
 
 	if (event=="COMBAT_LOG_EVENT_UNFILTERED") then
 	local _,warEventType, _, sourceGUID, sourceName, _, _, destGUID, destName, _, _ = CombatLogGetCurrentEventInfo()
@@ -164,11 +163,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 			end
 		end
 	end
-
-
-
-
-
+	
 	if (event=="PLAYER_REGEN_DISABLED") then
 		namespace.WarCombatState = true
 		if (WarHideCombatState == true) then
@@ -247,7 +242,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 				posX = math.floor(posX * 100)
 				posY = math.floor(posY * 100)
 				local id,channelName = GetChannelName("WMT")
-        if (id > 0 and channelName ~= nil and notificationTimer <= 0) then
+        if (id > 0 and channelName ~= nil and namespace.GetNotificationTimer() <= 0) then
         C_ChatInfo.SendAddonMessage("wmt:", _wmtWarCacheText, "CHANNEL", id)
         C_ChatInfo.SendAddonMessage("wmt:", _wmtWarCacheText, "RAID")
         end
@@ -332,28 +327,23 @@ warTrackFrame:SetScript("OnEvent", OnWarUpdates)
 --Also updates the notification text, elapsed is the number of seconds taken between each frame. Subtracts that from the timer and when the timer is below 0, stops displaying the text. Else text is displayed
 local reReg = CreateFrame("Frame")
 reReg:SetScript("OnUpdate", function(_, elapsed)
-IsBountied()
-if (currBounty == "ACTIVE")then
-currBountyText:SetText("Bounty Status: " .. currBounty)
-	if (CheckSelfNotification == true) then
-	SetNotificationText("A BOUNTY HAS BEEN PLACED ON YOUR HEAD", 6)
-	CheckSelfNotification = false
+
+if (true)then
+	namespace.SetBountyStatus(_currBountyStatus);
+	if (namespace.CanAlertBountied == true) then
+		namespace.SetNotificationText("A BOUNTY HAS BEEN PLACED ON YOUR HEAD", 6)
+		namespace.CanAlertBountied = false
 	end
 end
 --is the pvp kills change event is not registered, re-registers it
 if (warTrackFrame:IsEventRegistered("PLAYER_PVP_KILLS_CHANGED") == false) then
 warTrackFrame:RegisterEvent("PLAYER_PVP_KILLS_CHANGED")
 end
---if the notification timers are not 0, then shows the notification. If its less than 1 then it hides it. While its not 0 it subtracts from it
-if (notificationTimer ~= 0) then
-	if (notificationTimer > 1) then
-	ShowNotificationText()
-	else
-	HideNotificationText()
-	end
-notificationTimer = notificationTimer - elapsed
-end
+	
+namespace.UpdateNotifications(elapsed);
 
+--ToDo: setup an update method for cache tools as well
+	
 --if the war cache timer is not 0, then count down till its 0 then reset it
 if (_wmtCacheTimer ~= 0) then
 	if (_wmtCacheTimer < 1) then

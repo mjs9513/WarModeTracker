@@ -14,7 +14,7 @@ WarFrameG = .1;
 WarFrameB = .1;
 WarFrameTransparency = 0.7;
 
-function SetSettingsButtonStates()
+function namespace.SetSettingsButtonStates()
     --Sets the checked status of the buttons based on the saved variab;es
     MainTrackerFrameButton:SetChecked(FrameStates.MainFrame)
     LockFramesButton:SetChecked(FrameStates.lockFrameState)

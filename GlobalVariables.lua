@@ -40,7 +40,7 @@ KillingBlowState = true;
 CacheTrackerState = true;
 
 --boolean used to track if the player has gained a bounty
-CheckSelfNotification = true
+namespace.CanAlertBountied = true
 --Two booleans to track whether or not the text for the bounty notification, and the accompanying sound, should play
 ShowWarTrackWarningNotification = true
 PlayWarTrackWarningNotification = true

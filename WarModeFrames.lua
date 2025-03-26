@@ -174,35 +174,6 @@ namespace.PlayerBountiesText:SetPoint("CENTER", namespace.CurrNumEnemyBounties, 
 namespace.PlayerBountiesText:SetWidth(110)
 namespace.PlayerBountiesText:SetHeight(60)
 
---setup for the text that displays the bounty notifications on screen
-namespace.WarModeNotificationText = WarBountiesFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
-namespace.WarModeNotificationText:SetPoint("CENTER", UIParent,"TOP", 0, -125)
-namespace.WarModeNotificationText:SetText(" ")
-namespace.WarModeNotificationText:SetFont("Fonts\\FRIZQT__.TTF", 35)
-namespace.WarModeNotificationText:SetTextColor(1, .20, .20)
-namespace.WarModeNotificationText:Hide()
-
---function that sets the notification text, and the timer for which the notification text will display
-function SetNotificationText(message, timer)
-    if (ShowWarTrackWarningNotification == true) then
-        namespace.WarModeNotificationText:SetText(message)
-        if(PlayWarTrackWarningNotification == true) then
-            PlaySoundFile(543587)
-        end
-        notificationTimer = timer
-    end
-end
-
---function for showing bounty notification text
-function ShowNotificationText()
-    namespace.WarModeNotificationText:Show()
-end
-
---function for hiding the notification text
-function HideNotificationText()
-    namespace.WarModeNotificationText:Hide()
-end
-
 --resets the text for the War Cache Tracker
 function ResetCacheText()
     namespace.WarCacheText:SetText("NO ACTIVE WAR CHESTS")
@@ -313,7 +284,7 @@ function namespace.SetTrackerTexts()
     namespace.HighestEnemiesText:SetText("Highest Streak: " .. HighestWarKills)
     namespace.LastKillText:SetText("Last Kill Streak: " .. LastWarKills)
     namespace.WarEnemiesText:SetText("Enemies Slain: " .. WarKills)
-    namespace.CurrBountyText:SetText("Bounty Status: " .. currBounty)
+    namespace.CurrBountyText:SetText("Bounty Status: " .. _currBountyStatus)
     namespace.WarHonorLvlText:SetText("Lvl ".. PvpWarRank)
     namespace.WarTotalKillingBlowsText:SetText("Killing Blows: " .. TotalWarKillingBlows)
     if(namespace.GetActiveItems(namespace.EnemyWarBounties) ~= nil and namespace.GetActiveItems(namespace.EnemyWarBounties) ~= 0) then
@@ -341,7 +312,11 @@ function namespace.SetLastKillStreakText(newText)
     namespace.LastKillText:SetText(newText)
 end
 
-function InitializeMainFrame()
+function namespace.SetBountyStatus(newText)
+    namespace.CurrBountyText:SetText("Bounty Status: " .. newText)
+end
+
+function namespace.InitializeMainFrame()
     --Sets the buttons to display on load based on saved variables
     ShowWarFrame(FrameStates.MainFrame);
     ShowCurrentKills(FrameStates.currKillState);
