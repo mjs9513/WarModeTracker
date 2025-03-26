@@ -65,3 +65,13 @@ function namespace.ScanForChests()
         end
     end
 end 
+
+function namespace.UpdateWarChestTools(elapsed)
+    --if the war cache timer is not 0, then count down till its 0 then reset it
+    if (namespace.CacheMessageCD ~= 0) then
+        if (namespace.CacheMessageCD < 1) then
+            namespace.ResetCacheText()
+        end
+        namespace.CacheMessageCD = namespace.CacheMessageCD - elapsed
+    end
+end 

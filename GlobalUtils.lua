@@ -82,7 +82,6 @@ function namespace.GetActiveItems(source)
     return table.getn(source);
 end
 
-
 --Checks if the player is bountied. AuraUtil.FindAuraByName searches the player for a specified buff/debuff. Third parameter is the filter (one string separated by spaces), its very specific
 --also sets checkSelfNotification to true if they dont have a bounty so the addon re-checks for the next bounty occurence
 function namespace.IsBountied()

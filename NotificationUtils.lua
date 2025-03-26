@@ -52,6 +52,20 @@ function namespace.InitializeAddonMessages()
     end
 end
 
+function namespace.CheckAndJoinAddonChannel()
+    if(GetNumDisplayChannels() >= 3) then
+        --join the WMT CHANNEL
+        if(GetChannelName("WMT") == 0) then
+            JoinTemporaryChannel("WMT",nil, 4, nil)
+        end
+        namespace.InitializeAddonMessages();
+        --Check to make sure it isnt listed as the first channel, if it is make it the last one
+        RemoveChatWindowChannel(0, "WMT")
+        ChatFrame_RemoveChannel(DEFAULT_CHAT_FRAME, "WMT")
+        warTrackFrame:UnregisterEvent("CHANNEL_UI_UPDATE") -- unregister so it only runs once
+    end
+end
+
 function namespace.UpdateNotifications(elapsed)
     --if the notification timers are not 0, then shows the notification. If its less than 1 then it hides it. While its not 0 it subtracts from it
     if (_notificationTimer ~= 0) then
@@ -64,10 +78,24 @@ function namespace.UpdateNotifications(elapsed)
     end
 end
 
+function namespace.ParseAddonMessage(arg1, arg2)
+    if (arg1 == "wmt:") then
+        if (CacheTrackerState == true) then
+            local message, locX, locY, zoneName = strsplit("-", arg2)
+            local currZone = GetZoneText()
+            currZone = string.gsub(currZone, " ", "");
+            zoneName = string.gsub(zoneName, " ", "");
+            if (tostring(currZone) == tostring(zoneName)) then
+                namespace.ParseWarCacheMessage(_wmtLastCacheText, arg2)
+            end
+        end
+    end
+end
+
 --reads in and parses the War Cache Messages. If nil values, sets to 0s and throw aways
 --if the zones are different, its a new war chest and updates appropriately
 --if the location is 15 different in X or Y, its a new chest and updates it
-function namespace.ParseWarCacheMessage(oldCache, newCache)
+function ParseWarCacheMessage(oldCache, newCache)
     local newMessage, newX, newY, newZoneName = strsplit("-", newCache)
     local oldMessage, oldX, oldY, oldZoneName = strsplit("-", oldCache)
     local currZone = GetZoneText()

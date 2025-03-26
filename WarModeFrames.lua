@@ -277,6 +277,34 @@ function ShowWarCacheFrame(cacheTrackerState)
     end
 end
 
+function namespace.OnCombatEnter()
+    if (WarHideCombatState == true) then
+        WarGhostFrame:Hide();
+        if(FrameStates.MainFrame == true) then
+            warTrackFrame:Hide()
+        end
+        if(FrameStates.warBountiesState == true) then
+            WarBountiesFrame:Hide()
+        end
+        if(CacheTrackerState == true) then
+            WarCacheFrame:Hide()
+        end
+    end
+end
+
+function namespace.OnCombatExit()
+    WarGhostFrame:Show();
+    if(FrameStates.MainFrame == true) then
+        warTrackFrame:Show()
+    end
+    if(FrameStates.warBountiesState == true) then
+        WarBountiesFrame:Show()
+    end
+    if(CacheTrackerState == true) then
+        WarCacheFrame:Show()
+    end
+end
+
 --Function for setting up the text for the War Tracker panel, if there are no war bounties sets active bounties to 0, else gets num active bounties based on the list of names
 --also sets the text to the list string
 function namespace.SetTrackerTexts()
