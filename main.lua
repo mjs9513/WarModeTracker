@@ -1,86 +1,39 @@
 local addOnName, namespace = ...
---stores current number of kills
-warKills = 0;
-
 --gets the name of the player
 local PLAYER_NAME = GetUnitName("player", false)
 
---stores the number of killing blows
-totalWarKillingBlows = 0
+
 --stores if you have a bounty
-bountyCount = nil;
+hasBounty = nil;
 --string for bounty status
 currBounty = "INACTIVE";
---container for last killing streak
-lastWarKills = 0;
---container for highest killing streak
-highestWarKills = 0;
-
---Gets the player's PvP honor level
-pvpWarRank = UnitHonorLevel("player")
 --Gets the players total honorable kills
 local lastTotalWarKills, _,_ = GetPVPLifetimeStats();
---Gets the player's faction
-local playerFaction = UnitFactionGroup("player");
 
 --timer for the notification of bounties to display on screen
 local notificationTimer = 0
 
---boolean used to track if the player has gained a bounty
-checkSelfNotification = true
---Two booleans to track whether or not the text for the bounty notification, and the accompanying sound, should play
-showWarTrackWarningNotification = true
-playWarTrackWarningNotification = true
-
---two booleans for tracking whether the window is hidden or show in combat or when not in war mode
-warHidePvPState = false
-warHideCombatState = false
---Boolean for checking whether or not the player is in combat, specifically used for when hide in combat is checked and hide when not in war mode is unchecked
-warCombatState = false
-
---variable for tracking the state in which killing blows will reset: 1 - Death, 2 - Zone change, 3 - Loading Screen
-killingBlowResetDeath = false;
-killingBlowResetZone = true;
-killingBlowResetLoad = true;
-
---Library that stores button states
-FrameStates = {
-	["MainFrame"] = true,
-	["warBountiesState"] = true,
-	["lockFrameState"] = false,
-	["logoState"] = true,
-	["warPvPState"] = true,
-	["currKillState"] = true,
-	["currBountyState"] = true,
-	["lastKillState"] = true,
-	["highestWarKillState"] = true,
-	["totalKillState"] = true,
-}
-killingBlowState = true;
-cacheTrackerState = true;
-
-warcacheParty = true;
-warcacheGeneral = false;
-
-wmtWarCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
-wmtLastCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
-local wmtPrefCheck;
+_wmtWarCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
+_wmtLastCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
+local _wmtPrefCheck;
 
 --variable for storing the timer for the War Caches
-local wmtCacheTimer = 0;
+local _wmtCacheTimer = 0;
 
 --variable for storing the name of the last check moused over by the player
-local warChestType = " ";
+local _warChestType = " ";
 
 --Checks if the player is bountied. AuraUtil.FindAuraByName searches the player for a specified buff/debuff. Third parameter is the filter (one string separated by spaces), its very specific
 --also sets checkSelfNotification to true if they dont have a bounty so the addon re-checks for the next bounty occurence
 function IsBountied()
-	bountyCount = AuraUtil.FindAuraByName("Bounty Hunted", "player", "NOT_CANCELABLE HARMFUL")
-	if (bountyCount ~= nil) then
+	hasBounty = AuraUtil.FindAuraByName("Bounty Hunted", "player", "NOT_CANCELABLE HARMFUL")
+	if (hasBounty ~= nil) then
 		currBounty = "ACTIVE"
-		else
+		return true;
+	else
 		currBounty = "INACTIVE"
-		checkSelfNotification = true
+		CheckSelfNotification = true
+		return false;
 	end
 end
 
@@ -116,18 +69,18 @@ function ParseWarCacheMessage(oldCache, newCache)
 	newZoneName = string.gsub(newZoneName, " ", "");
 	oldZoneName = string.gsub(oldZoneName, " ", "");
 	if (newZoneName ~= oldZoneName or newZoneName ~= currZone) then
-		wmtLastCacheText = newCache
-	 	wmtWarCacheText = newCache
-		warCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
-		wmtCacheTimer = 200
+		_wmtLastCacheText = newCache
+	 	_wmtWarCacheText = newCache
+		namespace.WarCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
+		_wmtCacheTimer = 200
 		SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
 		return true;
 	end
 	if (((tonumber(newX) >= tonumber(oldX) + 15) or (tonumber(newX) <= tonumber(oldX) - 15)) or ((tonumber(newY) >= tonumber(oldY) + 15) or (tonumber(newY) <= tonumber(oldY) - 15))) then
-		wmtLastCacheText = newCache
-		wmtWarCacheText = newCache
-		warCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
-		wmtCacheTimer = 200
+		_wmtLastCacheText = newCache
+		_wmtWarCacheText = newCache
+		namespace.WarCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
+		_wmtCacheTimer = 200
 		SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
 		return true;
 	end
@@ -139,18 +92,18 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		--get the total honor kills and pvp rank
 		TotalWarKills = GetPVPLifetimeStats();
 		lastTotalWarKills = GetPVPLifetimeStats();
-		pvpWarRank = UnitHonorLevel("player")
+		PvpWarRank = UnitHonorLevel("player")
 		--Reset war kills
-		if (warKills ~= 0) then
-		lastWarKills = warKills
-		warKills = 0;
+		if (WarKills ~= 0) then
+		LastWarKills = WarKills
+		WarKills = 0;
 		end
 		--reset killing blows
-		if(killingBlowResetLoad == true) then
-			totalWarKillingBlows = 0
+		if(KillingBlowResetLoad == true) then
+			TotalWarKillingBlows = 0
 		end
 		
-		namespace.SetLastKillStreakText("Last Kill Streak: " .. lastWarKills);
+		namespace.SetLastKillStreakText("Last Kill Streak: " .. LastWarKills);
 
 		--Set the panel text
 		namespace.SetTrackerTexts();
@@ -169,30 +122,30 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		--ajust the frames as needed
 		AdjustCacheFramePos()
 		--register the wmt prefix
-		wmtPrefCheck = C_ChatInfo.RegisterAddonMessagePrefix("wmt:")
+		_wmtPrefCheck = C_ChatInfo.RegisterAddonMessagePrefix("wmt:")
 		AdjustWMTChannelPos()
 		namespace.SearchForBounties()
 	end
 	if (event == "PLAYER_DEAD") then
-		if (highestWarKills < warKills) then
-			highestWarKills = warKills
+		if (HighestWarKills < WarKills) then
+			HighestWarKills = WarKills
 		end
-		lastWarKills = warKills
-		warKills = 0
-		if(killingBlowResetDeath == true) then
-			totalWarKillingBlows = 0
+		lastWarKills = WarKills
+		WarKills = 0
+		if(KillingBlowResetDeath == true) then
+			TotalWarKillingBlows = 0
 		end
-		SetTrackerTexts()
+		namespace.SetTrackerTexts()
 	end
 	if (event == "PLAYER_PVP_KILLS_CHANGED") then
 		TotalWarKills = GetPVPLifetimeStats();
-		warKills = warKills + (TotalWarKills - lastTotalWarKills)
+		WarKills = WarKills + (TotalWarKills - lastTotalWarKills)
 		lastTotalWarKills = TotalWarKills;
-		if (highestWarKills <= warKills) then
-			highestWarKills = warKills
+		if (HighestWarKills <= WarKills) then
+			HighestWarKills = WarKills
 		end
-		pvpWarRank = UnitHonorLevel("player");
-		SetTrackerTexts()
+		PvpWarRank = UnitHonorLevel("player");
+		namespace.SetTrackerTexts()
 		warTrackFrame:UnregisterEvent("PLAYER_PVP_KILLS_CHANGED");
 	end
 	if (event == "VIGNETTES_UPDATED") then
@@ -206,8 +159,8 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		if(warEventType=="PARTY_KILL") then
 		local warUnitType = strsplit("-", destGUID)
 		if (warUnitType == "Player" and PLAYER_NAME == sourceName)then
-				totalWarKillingBlows = totalWarKillingBlows + 1
-				SetTrackerTexts()
+				TotalWarKillingBlows = TotalWarKillingBlows + 1
+				namespace.SetTrackerTexts()
 			end
 		end
 	end
@@ -217,8 +170,8 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 
 
 	if (event=="PLAYER_REGEN_DISABLED") then
-		warCombatState = true
-		if (warHideCombatState == true) then
+		namespace.WarCombatState = true
+		if (WarHideCombatState == true) then
 			WarGhostFrame:Hide();
 			if(FrameStates.MainFrame == true) then
 				warTrackFrame:Hide()
@@ -226,13 +179,13 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 			if(FrameStates.warBountiesState == true) then
 				WarBountiesFrame:Hide()
 			end
-			if(cacheTrackerState == true) then
+			if(CacheTrackerState == true) then
 				WarCacheFrame:Hide()
 			end
 		end
 	end
 	if (event=="PLAYER_REGEN_ENABLED") then
-		warCombatState = false
+		namespace.WarCombatState = false
 		WarGhostFrame:Show();
 		if(FrameStates.MainFrame == true) then
 				warTrackFrame:Show()
@@ -240,22 +193,22 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		if(FrameStates.warBountiesState == true) then
 			WarBountiesFrame:Show()
 		end
-		if(cacheTrackerState == true) then
+		if(CacheTrackerState == true) then
 			WarCacheFrame:Show()
 		end
 	end
 	if(event=="ZONE_CHANGED_NEW_AREA") then
-		if(killingBlowResetZone == true) then
-			totalWarKillingBlows = 0
+		if(KillingBlowResetZone == true) then
+			TotalWarKillingBlows = 0
 		end
 		namespace.SearchForBounties()
-		SetTrackerTexts()
+		namespace.SetTrackerTexts()
 
 
 	end
 	if(event=="ZONE_CHANGED") then
 		--show war track frame if its not currently showing and warhidepvpstate is false
-		if(warHidePvPState == true) then
+		if(WarHidePvPState == true) then
 			WarGhostFrame:Show()
 			if (C_PvP.IsWarModeActive() == true) then
 				if (warTrackFrame:IsShown() == false) then
@@ -276,69 +229,69 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		local testText = _G["GameTooltipTextLeft"..1]
 		local textExtractor = testText:GetText()
 			if(textExtractor == "War Supply Chest" or textExtractor == "Secret Supply Chest" or textExtractor == "War Supply Crate") then
-					if (cacheTrackerState == true) then
+					if (CacheTrackerState == true) then
 					local posX, posY = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
 					posX = math.floor(posX * 100)
 					posY = math.floor(posY * 100)
 					local zoneName = GetZoneText()
-					wmtWarCacheText = "War Cache Located - " .. posX ..  " - " .. posY .. " - " .. zoneName;
-					warChestType = textExtractor;
+					_wmtWarCacheText = "War Cache Located - " .. posX ..  " - " .. posY .. " - " .. zoneName;
+					_warChestType = textExtractor;
 					textExtractor = " "
 				end
 			end
 		end
 --if the messages are inconsistent with each other
-		if(wmtLastCacheText ~= wmtWarCacheText) then
-				if (cacheTrackerState == true) then
+		if(_wmtLastCacheText ~= _wmtWarCacheText) then
+				if (CacheTrackerState == true) then
 				local posX, posY = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
 				posX = math.floor(posX * 100)
 				posY = math.floor(posY * 100)
 				local id,channelName = GetChannelName("WMT")
         if (id > 0 and channelName ~= nil and notificationTimer <= 0) then
-        C_ChatInfo.SendAddonMessage("wmt:", wmtWarCacheText, "CHANNEL", id)
-        C_ChatInfo.SendAddonMessage("wmt:", wmtWarCacheText, "RAID")
+        C_ChatInfo.SendAddonMessage("wmt:", _wmtWarCacheText, "CHANNEL", id)
+        C_ChatInfo.SendAddonMessage("wmt:", _wmtWarCacheText, "RAID")
         end
         --IF THE USER CURRENTLY DOES NOT HAVE AN ACTIVE WAR CHEST LOADED IN THEIR FRAME
-        if (warCacheText:GetText() == "NO ACTIVE WAR CHESTS") then
+        if (namespace.WarCacheText:GetText() == "NO ACTIVE WAR CHESTS") then
 					--if they set to notify party, notify party on the mouseover
-					if(warcacheParty == true) then
+					if(WarcacheParty == true) then
 	          if (IsInRaid()) then
-	            SendChatMessage("WMT: " .. warChestType .. " located near " .. posX .. ", " .. posY, "RAID")
+	            SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "RAID")
 	          else
 	            if (IsInGroup()) then
-	              SendChatMessage("WMT: " .. warChestType .. " located near " .. posX .. ", " .. posY, "PARTY")
+	              SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "PARTY")
 	            end
 	          end
 					end
 					--if set to notify general, notify general on the mouseover
-					if(warcacheGeneral == true) then
+					if(WarcacheGeneral == true) then
 						local wmtChatIndex = GetChannelName("General")
 						local wmtChatNewIndex = GetChannelName("General - " .. GetZoneText())
 						if (wmtChatIndex~=nil and wmtChatIndex ~= 0) then
-							SendChatMessage("WMT: " .. warChestType .. " located near " .. posX .. ", " .. posY, "CHANNEL", nil, wmtChatIndex)
+							SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "CHANNEL", nil, wmtChatIndex)
 						else
 							if(wmtChatNewIndex ~= nil) then
-								SendChatMessage("WMT: " .. warChestType .. " located near " .. posX .. ", " .. posY, "CHANNEL", nil, wmtChatNewIndex)
+								SendChatMessage("WMT: " .. _warChestType .. " located near " .. posX .. ", " .. posY, "CHANNEL", nil, wmtChatNewIndex)
 							end
 						end
 
 					end
         end
-				wmtLastCacheText = wmtWarCacheText
-				warCacheText:SetText("War Chest Spotted Near: " .. posX .. ", " .. posY)
-				wmtCacheTimer = 200
+				_wmtLastCacheText = _wmtWarCacheText
+				namespace.WarCacheText:SetText("War Chest Spotted Near: " .. posX .. ", " .. posY)
+				_wmtCacheTimer = 200
 			end
 		end
 		--if the client sees a message with wmt, process that message and update accordingly
 		if (event=="CHAT_MSG_ADDON") then
 			if (arg1 == "wmt:") then
-				if (cacheTrackerState == true) then
+				if (CacheTrackerState == true) then
 					local message, locX, locY, zoneName = strsplit("-", arg2)
 					local currZone = GetZoneText()
 					currZone = string.gsub(currZone, " ", "");
 					zoneName = string.gsub(zoneName, " ", "");
 					if (tostring(currZone) == tostring(zoneName)) then
-						ParseWarCacheMessage(wmtLastCacheText, arg2)
+						ParseWarCacheMessage(_wmtLastCacheText, arg2)
 					end
 				end
 			end
@@ -382,9 +335,9 @@ reReg:SetScript("OnUpdate", function(_, elapsed)
 IsBountied()
 if (currBounty == "ACTIVE")then
 currBountyText:SetText("Bounty Status: " .. currBounty)
-	if (checkSelfNotification == true) then
+	if (CheckSelfNotification == true) then
 	SetNotificationText("A BOUNTY HAS BEEN PLACED ON YOUR HEAD", 6)
-	checkSelfNotification = false
+	CheckSelfNotification = false
 	end
 end
 --is the pvp kills change event is not registered, re-registers it
@@ -402,11 +355,11 @@ notificationTimer = notificationTimer - elapsed
 end
 
 --if the war cache timer is not 0, then count down till its 0 then reset it
-if (wmtCacheTimer ~= 0) then
-	if (wmtCacheTimer < 1) then
+if (_wmtCacheTimer ~= 0) then
+	if (_wmtCacheTimer < 1) then
 		ResetCacheText()
 	end
-wmtCacheTimer = wmtCacheTimer - elapsed
+_wmtCacheTimer = _wmtCacheTimer - elapsed
 end
 
 --checks in the notifcation button is set to false. If it is then also sets the play sound notification button to false as well.
@@ -414,13 +367,13 @@ if (namespace.ToggleNotificationsButton ~= nil and namespace.ToggleNotifications
 	if(namespace.ToggleSoundNotificationsButton ~= nil) then
 		namespace.ToggleSoundNotificationsButton:SetChecked(false)
 	end
-playWarTrackWarningNotification = false;
+PlayWarTrackWarningNotification = false;
 end
 
 --Checks to see if warHidePvPStates is true, if it is then checks if war mode is active. If it isnt, it checks if the frames are showing, if they are hides them. This is for hiding frames when war mode is inactive
 --also checks if the player is in combat or not with warCombatState which is set in the event registers section when the player enters/exists combat
 
-if(warHidePvPState == true) then
+if(WarHidePvPState == true) then
 	if (C_PvP.IsWarModeActive() == false) then
 		WarGhostFrame:Hide()
 		if (warTrackFrame:IsShown() == true) then
@@ -447,14 +400,14 @@ if (FrameStates.warBountiesState == false) then
 	end
 end
 
-if (cacheTrackerState == false) then
+if (CacheTrackerState == false) then
 	if (WarCacheFrame:IsShown() == true) then
 		WarCacheFrame:Hide()
 	end
 end
 
 --sets the never reset button to active is all other buttons are off.
-	if(killingBlowResetDeath == false and killingBlowResetLoad == false and killingBlowResetZone == false) then
+	if(KillingBlowResetDeath == false and KillingBlowResetLoad == false and KillingBlowResetZone == false) then
 		NeverResetButton:SetChecked(true)
 	end
 

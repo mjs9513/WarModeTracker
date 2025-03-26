@@ -65,7 +65,7 @@ end
 
 --sets whether or not the faction banner is that of the alliance or horde
 local _factionBanner = warTrackFrame:CreateTexture(nil,"ARTWORK")
-if (playerFaction == "Alliance") then
+if (namespace.PlayerFaction == "Alliance") then
     _factionBanner:SetTexture("Interface\\Timer\\Alliance-Logo.blp")
 else
     _factionBanner:SetTexture("Interface\\Timer\\Horde-Logo.blp")
@@ -144,8 +144,6 @@ else
     end
 end
 
-
-
 --positions the faction banner within the frame
 _factionBanner:SetPoint("LEFT", warTrackFrame, "LEFT", -15, -5)
 _factionBanner:SetWidth(100)
@@ -186,9 +184,9 @@ namespace.WarModeNotificationText:Hide()
 
 --function that sets the notification text, and the timer for which the notification text will display
 function SetNotificationText(message, timer)
-    if (showWarTrackWarningNotification == true) then
+    if (ShowWarTrackWarningNotification == true) then
         namespace.WarModeNotificationText:SetText(message)
-        if(playWarTrackWarningNotification == true) then
+        if(PlayWarTrackWarningNotification == true) then
             PlaySoundFile(543587)
         end
         notificationTimer = timer
@@ -312,12 +310,12 @@ end
 --also sets the text to the list string
 function namespace.SetTrackerTexts()
     namespace.TotalEnemiesText:SetText("Total Honor Kills: " .. namespace.TotalWarKills)
-    namespace.HighestEnemiesText:SetText("Highest Streak: " .. highestWarKills)
-    namespace.LastKillText:SetText("Last Kill Streak: " .. lastWarKills)
-    namespace.WarEnemiesText:SetText("Enemies Slain: " .. warKills)
+    namespace.HighestEnemiesText:SetText("Highest Streak: " .. HighestWarKills)
+    namespace.LastKillText:SetText("Last Kill Streak: " .. LastWarKills)
+    namespace.WarEnemiesText:SetText("Enemies Slain: " .. WarKills)
     namespace.CurrBountyText:SetText("Bounty Status: " .. currBounty)
-    namespace.WarHonorLvlText:SetText("Lvl ".. pvpWarRank)
-    namespace.WarTotalKillingBlowsText:SetText("Killing Blows: " .. totalWarKillingBlows)
+    namespace.WarHonorLvlText:SetText("Lvl ".. PvpWarRank)
+    namespace.WarTotalKillingBlowsText:SetText("Killing Blows: " .. TotalWarKillingBlows)
     if(namespace.GetActiveItems(namespace.EnemyWarBounties) ~= nil and namespace.GetActiveItems(namespace.EnemyWarBounties) ~= 0) then
         namespace.CurrNumEnemyBounties:SetText("Active Enemy Bounties: " .. namespace.GetActiveItems(namespace.EnemyWarBounties))
         namespace.PlayerBountiesText:SetText(namespace.EnemyBountyList)
@@ -355,6 +353,35 @@ function InitializeMainFrame()
     namespace.SetFramesInteractable(FrameStates.lockFrameState)
     ShowPvPLevel(FrameStates.warPvPState)
     ShowBountyFrame(FrameStates.warBountiesState)
-    ShowKillingBlowTracker(killingBlowState)
-    ShowWarCacheFrame(cacheTrackerState)
+    ShowKillingBlowTracker(KillingBlowState)
+    ShowWarCacheFrame(CacheTrackerState)
+end
+
+--Function for setting the text color in the War Tracker panel
+function namespace.SetFrameTextColors()
+    namespace.WarEnemiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.WarTotalKillingBlowsText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.LastKillText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.HighestEnemiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.CurrBountyText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.TotalEnemiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.WarHonorLvlText:SetTextColor(WarTextR, WarTextG, WarTextB)
+
+    namespace.CurrNumEnemyBounties:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.PlayerBountiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.EnemyBountiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
+    namespace.WarCacheText:SetTextColor(WarTextR, WarTextG, WarTextB)
+end
+
+--function for specifying whether the main frame is movable or not. is hidden or shown
+function namespace.SetFramesInteractable(lockState)
+    if (lockState == false) then
+        WarGhostFrame:EnableMouse(true)
+        WarBountiesFrame:EnableMouse(true)
+        WarCacheFrame:EnableMouse(true)
+    else
+        WarGhostFrame:EnableMouse(false)
+        WarBountiesFrame:EnableMouse(false)
+        WarCacheFrame:EnableMouse(false)
+    end
 end

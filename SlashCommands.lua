@@ -45,23 +45,23 @@ function namespace.WMTSlashCommands(cmd, editbox)
         SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "hide in combat") then
-        if(warHideCombatState == false) then
+        if(WarHideCombatState == false) then
             print("|cffffff00 WMT Hide in Combat Status: ACTIVE |r")
-            warHideCombatState = true
+            WarHideCombatState = true
         else
             print("|cffffff00 WMT Hide in Combat Status: INACTIVE |r")
-            warHideCombatState = false
+            WarHideCombatState = false
         end
         InitializeMainFrame()
         SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "hide in pve") then
-        if(warHidePvPState == false) then
+        if(WarHidePvPState == false) then
             print("|cffffff00 WMT Hide in PvE Status: ACTIVE |r")
-            warHidePvPState = true
+            WarHidePvPState = true
         else
             print("|cffffff00 WMT Hide in PvE Status: INACTIVE |r")
-            warHidePvPState = false
+            WarHidePvPState = false
             WarGhostFrame:Show()
         end
         InitializeMainFrame()
@@ -92,37 +92,37 @@ function namespace.WMTSlashCommands(cmd, editbox)
         AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "cache frame") then
-        if(cacheTrackerState == true) then
+        if(CacheTrackerState == true) then
             print("|cffffff00 WMT Cache Frame Status: INACTIVE |r")
-            cacheTrackerState = false
+            CacheTrackerState = false
         else
             print("|cffffff00 WMT Cache Frame Status: ACTIVE |r")
-            cacheTrackerState = true
+            CacheTrackerState = true
         end
         InitializeMainFrame()
         SetSettingsButtonStates()
         AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "notify message") then
-        if(showWarTrackWarningNotification == true) then
+        if(ShowWarTrackWarningNotification == true) then
             print("|cffffff00 WMT Notification Messages Status: INACTIVE |r")
-            showWarTrackWarningNotification = false
-            playWarTrackWarningNotification = false
+            ShowWarTrackWarningNotification = false
+            PlayWarTrackWarningNotification = false
         else
             print("|cffffff00 WMT Notification Messages Status: ACTIVE |r")
-            showWarTrackWarningNotification = true
+            ShowWarTrackWarningNotification = true
         end
         InitializeMainFrame()
         SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "notify sound") then
-        if(showWarTrackWarningNotification == true) then
-            if(playWarTrackWarningNotification == true) then
+        if(ShowWarTrackWarningNotification == true) then
+            if(PlayWarTrackWarningNotification == true) then
                 print("|cffffff00 WMT Notification Sounds Status: INACTIVE |r")
-                playWarTrackWarningNotification = false
+                PlayWarTrackWarningNotification = false
             else
                 print("|cffffff00 WMT Notification Sounds Status: ACTIVE |r")
-                playWarTrackWarningNotification = true
+                PlayWarTrackWarningNotification = true
             end
         else
             print("Cannot turn the WMT Notification Sound on while the Notification Messages are disabled")
@@ -131,23 +131,23 @@ function namespace.WMTSlashCommands(cmd, editbox)
         SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "general message") then
-        if(warcacheGeneral == true) then
+        if(WarcacheGeneral == true) then
             print("|cffffff00 WMT General Chat Notification Messages: INACTIVE |r")
-            warcacheGeneral = false
+            WarcacheGeneral = false
         else
             print("|cffffff00 WMT General Chat Notification Messages: ACTIVE |r")
-            warcacheGeneral = true
+            WarcacheGeneral = true
         end
         InitializeMainFrame()
         SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "party message") then
-        if(warcacheParty == true) then
+        if(WarcacheParty == true) then
             print("|cffffff00 WMT Party Chat Notification Messages: INACTIVE |r")
-            warcacheParty = false
+            WarcacheParty = false
         else
             print("|cffffff00 WMT Party Chat Notification Messages: ACTIVE |r")
-            warcacheParty = true
+            WarcacheParty = true
         end
         InitializeMainFrame()
         SetSettingsButtonStates()

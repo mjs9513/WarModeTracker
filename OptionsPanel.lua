@@ -26,19 +26,19 @@ function SetSettingsButtonStates()
     ShowTotalKillsButton:SetChecked(FrameStates.totalKillState)
     ShowPvpLvlButton:SetChecked(FrameStates.warPvPState)
     BountiesFrameButton:SetChecked(FrameStates.warBountiesState)
-    namespace.ToggleNotificationsButton:SetChecked(showWarTrackWarningNotification)
-    namespace.ToggleSoundNotificationsButton:SetChecked(playWarTrackWarningNotification)
-    HideInCombatButton:SetChecked(warHideCombatState)
-    HideInPvPButton:SetChecked(warHidePvPState)
-    TrackKillingBlowsButton:SetChecked(killingBlowState)
-    CacheTrackerButton:SetChecked(cacheTrackerState)
-    NotifyCachePartyButton:SetChecked(warcacheParty)
-    NotifyCacheGeneralButton:SetChecked(warcacheGeneral)
+    namespace.ToggleNotificationsButton:SetChecked(ShowWarTrackWarningNotification)
+    namespace.ToggleSoundNotificationsButton:SetChecked(PlayWarTrackWarningNotification)
+    HideInCombatButton:SetChecked(WarHideCombatState)
+    HideInPvPButton:SetChecked(WarHidePvPState)
+    TrackKillingBlowsButton:SetChecked(KillingBlowState)
+    CacheTrackerButton:SetChecked(CacheTrackerState)
+    NotifyCachePartyButton:SetChecked(WarcacheParty)
+    NotifyCacheGeneralButton:SetChecked(WarcacheGeneral)
 
-    ResetOnDeathButton:SetChecked(killingBlowResetDeath)
-    ResetOnZoningButton:SetChecked(killingBlowResetZone)
-    ResetOnLoadButton:SetChecked(killingBlowResetLoad)
-    if(killingBlowResetDeath == false and killingBlowResetLoad == false and killingBlowResetZone == false) then
+    ResetOnDeathButton:SetChecked(KillingBlowResetDeath)
+    ResetOnZoningButton:SetChecked(KillingBlowResetZone)
+    ResetOnLoadButton:SetChecked(KillingBlowResetLoad)
+    if(KillingBlowResetDeath == false and KillingBlowResetLoad == false and KillingBlowResetZone == false) then
         NeverResetButton:SetChecked(true)
     end
 end
@@ -89,13 +89,13 @@ CacheTrackerButton:SetScript("OnClick",
             local checker = CacheTrackerButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                cacheTrackerState = true;
-                ShowWarCacheFrame(cacheTrackerState)
+                CacheTrackerState = true;
+                ShowWarCacheFrame(CacheTrackerState)
                 AdjustCacheFramePos()
             else
                 PlaySound(857) -- Check Unclick Sound
-                cacheTrackerState = false;
-                ShowWarCacheFrame(cacheTrackerState)
+                CacheTrackerState = false;
+                ShowWarCacheFrame(CacheTrackerState)
                 AdjustCacheFramePos()
             end
         end);
@@ -110,10 +110,10 @@ NotifyCachePartyButton:SetScript("OnClick",
             local checker = NotifyCachePartyButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                warcacheParty = true
+                WarcacheParty = true
             else
                 PlaySound(857)
-                warcacheParty = false
+                WarcacheParty = false
             end
         end);
 
@@ -127,10 +127,10 @@ NotifyCacheGeneralButton:SetScript("OnClick",
             local checker = NotifyCacheGeneralButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                warcacheGeneral = true
+                WarcacheGeneral = true
             else
                 PlaySound(857)
-                warcacheGeneral = false
+                WarcacheGeneral = false
             end
         end);
 
@@ -144,10 +144,10 @@ namespace.ToggleNotificationsButton:SetScript("OnClick",
             local checker = namespace.ToggleNotificationsButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                showWarTrackWarningNotification = true;
+                ShowWarTrackWarningNotification = true;
             else
                 PlaySound(857) -- Check Unclick Sound
-                showWarTrackWarningNotification = false;
+                ShowWarTrackWarningNotification = false;
             end
         end);
 
@@ -161,10 +161,10 @@ namespace.ToggleSoundNotificationsButton:SetScript("OnClick",
             local checker = namespace.ToggleSoundNotificationsButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                playWarTrackWarningNotification = true;
+                PlayWarTrackWarningNotification = true;
             else
                 PlaySound(857) -- Check Unclick Sound
-                playWarTrackWarningNotification = false;
+                PlayWarTrackWarningNotification = false;
             end
         end);
 
@@ -189,11 +189,11 @@ ResetOnDeathButton:SetScript("OnClick",
             local checker = ResetOnDeathButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                killingBlowResetDeath = true
+                KillingBlowResetDeath = true
                 NeverResetButton:SetChecked(false)
             else
                 PlaySound(857)
-                killingBlowResetDeath = false;
+                KillingBlowResetDeath = false;
             end
         end);
 
@@ -207,11 +207,11 @@ ResetOnZoningButton:SetScript("OnClick",
             local checker = ResetOnZoningButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                killingBlowResetZone = true
+                KillingBlowResetZone = true
                 NeverResetButton:SetChecked(false)
             else
                 PlaySound(857)
-                killingBlowResetZone = false
+                KillingBlowResetZone = false
             end
         end);
 
@@ -225,11 +225,11 @@ ResetOnLoadButton:SetScript("OnClick",
             local checker = ResetOnLoadButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                killingBlowResetLoad = true
+                KillingBlowResetLoad = true
                 NeverResetButton:SetChecked(false)
             else
                 PlaySound(857)
-                killingBlowResetLoad = false
+                KillingBlowResetLoad = false
             end
         end);
 
@@ -243,9 +243,9 @@ NeverResetButton:SetScript("OnClick",
             local checker = NeverResetButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                killingBlowResetDeath = false;
-                killingBlowResetLoad = false;
-                killingBlowResetZone = false;
+                KillingBlowResetDeath = false;
+                KillingBlowResetLoad = false;
+                KillingBlowResetZone = false;
                 ResetOnDeathButton:SetChecked(false)
                 ResetOnLoadButton:SetChecked(false)
                 ResetOnZoningButton:SetChecked(false)
@@ -308,10 +308,10 @@ HideInCombatButton:SetScript("OnClick",
             local checker = HideInCombatButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                warHideCombatState = true
+                WarHideCombatState = true
             else
                 PlaySound(857) -- Check Unclick Sound
-                warHideCombatState = false
+                WarHideCombatState = false
             end
         end);
 
@@ -325,9 +325,9 @@ HideInPvPButton:SetScript("OnClick",
             local checker = HideInPvPButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                warHidePvPState = true
+                WarHidePvPState = true
                 --placing it here to see what happens
-                if(warHidePvPState == true) then
+                if(WarHidePvPState == true) then
                     if (C_PvP.IsWarModeActive() == false) then
                         WarGhostFrame:Hide()
                         if (warTrackFrame:IsShown() == true) then
@@ -343,10 +343,10 @@ HideInPvPButton:SetScript("OnClick",
                 end
             else
                 PlaySound(857) -- Check Unclick Sound
-                warHidePvPState = false
+                WarHidePvPState = false
 
                 --placing it here to see what happens
-                if(warHidePvPState == false) then
+                if(WarHidePvPState == false) then
                     WarGhostFrame:Show()
                     if (warTrackFrame:IsShown() == false) then
                         warTrackFrame:Show()
@@ -390,12 +390,12 @@ TrackKillingBlowsButton:SetScript("OnClick",
             local checker = TrackKillingBlowsButton:GetChecked()
             if checker then
                 PlaySound(856) -- Check Click Sound
-                killingBlowState = true
-                ShowKillingBlowTracker(killingBlowState)
+                KillingBlowState = true
+                ShowKillingBlowTracker(KillingBlowState)
             else
                 PlaySound(857) -- Check Unclick Sound
-                killingBlowState = false
-                ShowKillingBlowTracker(killingBlowState)
+                KillingBlowState = false
+                ShowKillingBlowTracker(KillingBlowState)
             end
         end);
 
@@ -778,8 +778,8 @@ resetWarHighest:SetBackdropBorderColor(1, 1, 1)
 
 --Script for the reset button
 resetWarHighest:SetScript("OnClick", function(self)
-    highestWarKills = 0;
-    highestEnemiesText:SetText("Highest Streak: " .. highestWarKills)
+    HighestWarKills = 0;
+    highestEnemiesText:SetText("Highest Streak: " .. HighestWarKills)
 end)
 
 --Script for the "Okay" button in the options menu, makes it so all edit boxes confirm and submit whats entered in them upon button press
@@ -836,33 +836,4 @@ function namespace.InitializeAddonMenu()
     namespace.WMTScaleSlider:SetValue(WMTFrameScale)
     namespace.WMTScaleEditbox:SetText(string.sub(WMTFrameScale, 1, 4))
     namespace.WMTScaleEditbox:SetCursorPosition(0)
-end
-
---Function for setting the text color in the War Tracker panel
-function namespace.SetFrameTextColors()
-    namespace.WarEnemiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.WarTotalKillingBlowsText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.LastKillText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.HighestEnemiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.CurrBountyText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.TotalEnemiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.WarHonorLvlText:SetTextColor(WarTextR, WarTextG, WarTextB)
-
-    namespace.CurrNumEnemyBounties:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.PlayerBountiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.EnemyBountiesText:SetTextColor(WarTextR, WarTextG, WarTextB)
-    namespace.WarCacheText:SetTextColor(WarTextR, WarTextG, WarTextB)
-end
-
---function for specifying whether the main frame is movable or not. is hidden or shown
-function namespace.SetFramesInteractable(lockState)
-    if (lockState == false) then
-        WarGhostFrame:EnableMouse(true)
-        WarBountiesFrame:EnableMouse(true)
-        WarCacheFrame:EnableMouse(true)
-    else
-        WarGhostFrame:EnableMouse(false)
-        WarBountiesFrame:EnableMouse(false)
-        WarCacheFrame:EnableMouse(false)
-    end
 end
