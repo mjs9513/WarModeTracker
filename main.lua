@@ -18,9 +18,6 @@ _wmtWarCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zo
 _wmtLastCacheText = "War Cache Located - " .. 0 ..  " - " .. 0 .. " - " .. "No Zone"
 local _wmtPrefCheck;
 
---variable for storing the timer for the War Caches
-local _wmtCacheTimer = 0;
-
 --variable for storing the name of the last check moused over by the player
 local _warChestType = " ";
 
@@ -33,50 +30,11 @@ function AdjustWMTChannelPos()
 	end
 end
 
---reads in and parses the War Cache Messages. If nil values, sets to 0s and throw aways
---if the zones are different, its a new war chest and updates appropriately
---if the location is 15 different in X or Y, its a new chest and updates it
-function ParseWarCacheMessage(oldCache, newCache)
-	local newMessage, newX, newY, newZoneName = strsplit("-", newCache)
-	local oldMessage, oldX, oldY, oldZoneName = strsplit("-", oldCache)
-	local currZone = GetZoneText()
-	if (oldX == nil) then
-		oldX = 0
-	end
-	if (oldY == nil) then
-		oldY = 0
-	end
-	if (oldMessage == nil) then
-		oldMessage = "Blank Message"
-	end
-	if(oldZoneName == nil) then
-		oldZoneName = "No Zone"
-	end
-	currZone = string.gsub(currZone, " ", "");
-	newZoneName = string.gsub(newZoneName, " ", "");
-	oldZoneName = string.gsub(oldZoneName, " ", "");
-	if (newZoneName ~= oldZoneName or newZoneName ~= currZone) then
-		_wmtLastCacheText = newCache
-	 	_wmtWarCacheText = newCache
-		namespace.WarCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
-		_wmtCacheTimer = 200
-		namespace.SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
-		return true;
-	end
-	if (((tonumber(newX) >= tonumber(oldX) + 15) or (tonumber(newX) <= tonumber(oldX) - 15)) or ((tonumber(newY) >= tonumber(oldY) + 15) or (tonumber(newY) <= tonumber(oldY) - 15))) then
-		_wmtLastCacheText = newCache
-		_wmtWarCacheText = newCache
-		namespace.WarCacheText:SetText("War Chest Spotted Near: " .. newX .. ", " .. newY)
-		_wmtCacheTimer = 200
-		namespace.SetNotificationText("A WAR CHEST HAS BEEN SPOTTED", 6)
-		return true;
-	end
-end
-
---Script fired off during events. Primary purpose is to set variables/text
+--Script fired off during events. Update style method
 local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	
 	if (event == "PLAYER_ENTERING_WORLD") then
+		--ToDo: Build initialize function that gets called from here, put it in main
 		--get the total honor kills and pvp rank
 		TotalWarKills = GetPVPLifetimeStats();
 		lastTotalWarKills = GetPVPLifetimeStats();
@@ -210,6 +168,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	end
 
 
+	--TODO: Add a function to WarChestUtils to do this, and just call that witin the "CURSOR_CHANGED" event 
 	if(event=="CURSOR_CHANGED") then
 		local testText = _G["GameTooltipTextLeft"..1]
 		local textExtractor = testText:GetText()
@@ -264,7 +223,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
         end
 				_wmtLastCacheText = _wmtWarCacheText
 				namespace.WarCacheText:SetText("War Chest Spotted Near: " .. posX .. ", " .. posY)
-				_wmtCacheTimer = 200
+				namespace.CacheMessageCD = 200
 			end
 		end
 		--if the client sees a message with wmt, process that message and update accordingly
@@ -276,7 +235,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 					currZone = string.gsub(currZone, " ", "");
 					zoneName = string.gsub(zoneName, " ", "");
 					if (tostring(currZone) == tostring(zoneName)) then
-						ParseWarCacheMessage(_wmtLastCacheText, arg2)
+						namespace.ParseWarCacheMessage(_wmtLastCacheText, arg2)
 					end
 				end
 			end
@@ -335,11 +294,11 @@ namespace.UpdateNotifications(elapsed);
 --ToDo: setup an update method for cache tools as well
 	
 --if the war cache timer is not 0, then count down till its 0 then reset it
-if (_wmtCacheTimer ~= 0) then
-	if (_wmtCacheTimer < 1) then
-		ResetCacheText()
+if (namespace.CacheMessageCD ~= 0) then
+	if (namespace.CacheMessageCD < 1) then
+		namespace.ResetCacheText()
 	end
-_wmtCacheTimer = _wmtCacheTimer - elapsed
+	namespace.CacheMessageCD = namespace.CacheMessageCD - elapsed
 end
 
 --checks in the notifcation button is set to false. If it is then also sets the play sound notification button to false as well.

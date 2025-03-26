@@ -175,7 +175,7 @@ namespace.PlayerBountiesText:SetWidth(110)
 namespace.PlayerBountiesText:SetHeight(60)
 
 --resets the text for the War Cache Tracker
-function ResetCacheText()
+function namespace.ResetCacheText()
     namespace.WarCacheText:SetText("NO ACTIVE WAR CHESTS")
 end
 

@@ -10,6 +10,6 @@ WarModeFrames.lua
 GlobalUtils.lua
 OptionsPanel.lua
 SlashCommands.lua
-Notifications.lua
+NotificationUtils.lua
 WarChestTools.lua
 main.lua
