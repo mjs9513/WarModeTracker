@@ -5,11 +5,6 @@
 --MOVE NOTIFICATIONUTILS ABOVE GLOBAL UTILS?
 
 local addOnName, namespace = ...
---gets the name of the player
-local PLAYER_NAME = GetUnitName("player", false)
-
---Gets the players total honorable kills
-local lastTotalWarKills, _,_ = GetPVPLifetimeStats();
 
 --registers all necessary events for the OnEvent update script
 warTrackFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -30,20 +25,9 @@ warTrackFrame:RegisterEvent("CHANNEL_UI_UPDATE")
 local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	--Player entering world, initialize the addon
 	if (event == "PLAYER_ENTERING_WORLD") then
-		--ToDo: Build initialize function that gets called from here, put it in main
-		--get the total honor kills and pvp rank
-		TotalWarKills = GetPVPLifetimeStats();
-		lastTotalWarKills = GetPVPLifetimeStats();
-		PvpWarRank = UnitHonorLevel("player")
-		--Reset war kills
-		if (WarKills ~= 0) then
-		LastWarKills = WarKills
-		WarKills = 0;
-		end
-		--reset killing blows
-		if(KillingBlowResetLoad == true) then
-			TotalWarKillingBlows = 0
-		end
+		--Initialize PvPTools, loads in PvP Stats from the character
+		namespace.PvPToolsInitialize();
+		
 		
 		
 		--TODO: MOVE TO AN INITIALIZE FRAMES METHOD ON WARMODEFRAMES.LUA
@@ -56,9 +40,10 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		--setup the main panel background
 		namespace.SetFrameBackgrounds();
 
+		
+		
 		--Initialize the addon setting menu
 		namespace.InitializeAddonMenu();
-		namespace.SetSettingsButtonStates() -- set the button check statuses. TODO: Move into initialize addon settings menu
 
 		--ajust the frames as needed
 		namespace.AdjustCacheFramePos() --ToDo: look into this, can it be condensed
@@ -69,26 +54,10 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	end
 	
 	if (event == "PLAYER_DEAD") then
-		if (HighestWarKills < WarKills) then
-			HighestWarKills = WarKills
-		end
-		lastWarKills = WarKills
-		WarKills = 0
-		if(KillingBlowResetDeath == true) then
-			TotalWarKillingBlows = 0
-		end
-		namespace.SetTrackerTexts()
+		namespace.PvPToolsOnPlayerDeath();
 	end
 	if (event == "PLAYER_PVP_KILLS_CHANGED") then
-		TotalWarKills = GetPVPLifetimeStats();
-		WarKills = WarKills + (TotalWarKills - lastTotalWarKills)
-		lastTotalWarKills = TotalWarKills;
-		if (HighestWarKills <= WarKills) then
-			HighestWarKills = WarKills
-		end
-		PvpWarRank = UnitHonorLevel("player");
-		namespace.SetTrackerTexts()
-		warTrackFrame:UnregisterEvent("PLAYER_PVP_KILLS_CHANGED");
+		namespace.PvPToolsUpdateKills();
 	end
 	
 	if (event == "VIGNETTES_UPDATED") then
@@ -110,26 +79,12 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 	end
 	if(event=="ZONE_CHANGED_NEW_AREA") then
 		namespace.PvPToolsOnZoneChanged();
-		namespace.SetTrackerTexts()
-
-
+		namespace.SetTrackerTexts();
 	end
 	if(event=="ZONE_CHANGED") then
-		--show war track frame if its not currently showing and warhidepvpstate is false
-		if(WarHidePvPState == true) then
-			WarGhostFrame:Show()
-			if (C_PvP.IsWarModeActive() == true) then
-				if (warTrackFrame:IsShown() == false) then
-					warTrackFrame:Show()
-				end
-				if(WarBountiesFrame:IsShown() == false) then
-					WarBountiesFrame:Show()
-				end
-				if(WarCacheFrame:IsShown() == false) then
-					WarCacheFrame:Show()
-				end
-			end
-		end
+		namespace.PvPToolsOnZoneChanged();
+		namespace.WarModeFramesOnZoneChanged();
+		namespace.SetTrackerTexts();
 	end
 	
 	if(event=="CURSOR_CHANGED") then

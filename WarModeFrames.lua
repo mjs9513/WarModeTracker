@@ -305,6 +305,24 @@ function namespace.OnCombatExit()
     end
 end
 
+function namespace.WarModeFramesOnZoneChanged()
+    --show war track frame if its not currently showing and warhidepvpstate is false
+    if(WarHidePvPState == true) then
+        WarGhostFrame:Show()
+        if (C_PvP.IsWarModeActive() == true) then
+            if (warTrackFrame:IsShown() == false) then
+                warTrackFrame:Show()
+            end
+            if(WarBountiesFrame:IsShown() == false) then
+                WarBountiesFrame:Show()
+            end
+            if(WarCacheFrame:IsShown() == false) then
+                WarCacheFrame:Show()
+            end
+        end
+    end
+end
+
 --Function for setting up the text for the War Tracker panel, if there are no war bounties sets active bounties to 0, else gets num active bounties based on the list of names
 --also sets the text to the list string
 function namespace.SetTrackerTexts()

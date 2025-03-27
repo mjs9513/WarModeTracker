@@ -1,11 +1,61 @@
 --Lua file containing functions for world pvp bounties
 local addOnName, namespace = ...
 
+--gets the name of the player
+local PLAYER_NAME = GetUnitName("player", false)
+
+--Gets the players total honorable kills
+local _lastTotalWarKills = GetPVPLifetimeStats();
+
+function namespace.PvPToolsInitialize()
+    _lastTotalWarKills = GetPVPLifetimeStats();
+    --get the total honor kills and pvp rank
+    TotalWarKills = GetPVPLifetimeStats();
+    lastTotalWarKills = GetPVPLifetimeStats();
+    PvpWarRank = UnitHonorLevel("player")
+    --Reset war kills
+    if (WarKills ~= 0) then
+        LastWarKills = WarKills
+        WarKills = 0;
+    end
+    --reset killing blows
+    if(KillingBlowResetLoad == true) then
+        TotalWarKillingBlows = 0
+    end
+end
+
 function namespace.PvPToolsOnZoneChanged()
     if(KillingBlowResetZone == true) then
         TotalWarKillingBlows = 0
     end
     namespace.SearchForBounties()
+end
+
+function namespace.PvPToolsOnPlayerDeath()
+    if (HighestWarKills < WarKills) then
+        HighestWarKills = WarKills
+    end
+    LastWarKills = WarKills
+    WarKills = 0
+    if(KillingBlowResetDeath == true) then
+        TotalWarKillingBlows = 0
+    end
+    namespace.SetTrackerTexts()
+end
+
+function namespace.PvPToolsUpdateKills()
+    TotalWarKills = GetPVPLifetimeStats();
+    WarKills = WarKills + (TotalWarKills - _lastTotalWarKills)
+    _lastTotalWarKills = TotalWarKills;
+    if (HighestWarKills <= WarKills) then
+        HighestWarKills = WarKills
+    end
+    PvpWarRank = UnitHonorLevel("player");
+    namespace.SetTrackerTexts()
+    
+    --ToDo: Find a better way to do this
+    --Deregister the event so it only fires once this frame
+    warTrackFrame:UnregisterEvent("PLAYER_PVP_KILLS_CHANGED");
 end
 
 function namespace.CheckForKillingBlows()

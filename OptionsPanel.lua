@@ -836,4 +836,6 @@ function namespace.InitializeAddonMenu()
     namespace.WMTScaleSlider:SetValue(WMTFrameScale)
     namespace.WMTScaleEditbox:SetText(string.sub(WMTFrameScale, 1, 4))
     namespace.WMTScaleEditbox:SetCursorPosition(0)
+
+    namespace.SetSettingsButtonStates() -- set the button check statuses.
 end

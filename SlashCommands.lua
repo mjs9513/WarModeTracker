@@ -21,17 +21,17 @@ function namespace.WMTSlashCommands(cmd, editbox)
     end
     if (string.lower(cmd) == "on") then
         print("|cffffff00 War Mode Tracker is now ON |r")
-        SetTrackerStates(true)
-        InitializeMainFrame()
-        SetSettingsButtonStates()
-        AdjustCacheFramePos()
+        --namespace.SetTrackerStates(true)
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
+        namespace.AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "off") then
         print("|cffffff00 War Mode Tracker is now OFF |r")
-        SetTrackerStates(false)
-        InitializeMainFrame()
-        SetSettingsButtonStates()
-        AdjustCacheFramePos()
+        --namespace.SetTrackerStates(false)
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
+        namespace.AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "lock") then
         if (FrameStates.lockFrameState == true) then
@@ -41,8 +41,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT Lock Status: LOCKED |r")
             FrameStates.lockFrameState = true
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "hide in combat") then
         if(WarHideCombatState == false) then
@@ -52,8 +52,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT Hide in Combat Status: INACTIVE |r")
             WarHideCombatState = false
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "hide in pve") then
         if(WarHidePvPState == false) then
@@ -64,8 +64,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
             WarHidePvPState = false
             WarGhostFrame:Show()
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "main frame") then
         if(FrameStates.MainFrame == true) then
@@ -75,9 +75,9 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT Main Frame Status: ACTIVE |r")
             FrameStates.MainFrame = true
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
-        AdjustCacheFramePos()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
+        namespace.AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "bounty frame") then
         if(FrameStates.warBountiesState == true) then
@@ -87,9 +87,9 @@ function namespace.WMTSlashCommands(cmd, editbox)
             FrameStates.warBountiesState = true
             print("|cffffff00 WMT Bounty Frame Status: ACTIVE |r")
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
-        AdjustCacheFramePos()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
+        namespace.AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "cache frame") then
         if(CacheTrackerState == true) then
@@ -99,9 +99,9 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT Cache Frame Status: ACTIVE |r")
             CacheTrackerState = true
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
-        AdjustCacheFramePos()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
+        namespace.AdjustCacheFramePos()
     end
     if(string.lower(cmd) == "notify message") then
         if(ShowWarTrackWarningNotification == true) then
@@ -112,8 +112,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT Notification Messages Status: ACTIVE |r")
             ShowWarTrackWarningNotification = true
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "notify sound") then
         if(ShowWarTrackWarningNotification == true) then
@@ -127,8 +127,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
         else
             print("Cannot turn the WMT Notification Sound on while the Notification Messages are disabled")
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "general message") then
         if(WarcacheGeneral == true) then
@@ -138,8 +138,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT General Chat Notification Messages: ACTIVE |r")
             WarcacheGeneral = true
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
     if(string.lower(cmd) == "party message") then
         if(WarcacheParty == true) then
@@ -149,8 +149,8 @@ function namespace.WMTSlashCommands(cmd, editbox)
             print("|cffffff00 WMT Party Chat Notification Messages: ACTIVE |r")
             WarcacheParty = true
         end
-        InitializeMainFrame()
-        SetSettingsButtonStates()
+        namespace.InitializeMainFrame()
+        namespace.SetSettingsButtonStates()
     end
 end
 --create the wmt slash command
