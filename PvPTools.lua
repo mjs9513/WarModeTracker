@@ -1,6 +1,13 @@
 --Lua file containing functions for world pvp bounties
 local addOnName, namespace = ...
 
+function namespace.PvPToolsOnZoneChanged()
+    if(KillingBlowResetZone == true) then
+        TotalWarKillingBlows = 0
+    end
+    namespace.SearchForBounties()
+end
+
 function namespace.CheckForKillingBlows()
     local _,warEventType, _, sourceGUID, sourceName, _, _, destGUID, destName, _, _ = CombatLogGetCurrentEventInfo()
     if(warEventType=="PARTY_KILL") then
@@ -75,7 +82,7 @@ function namespace.SearchForBounties()
         end
         namespace.EnemyWarBounties = enemyBountyNames
         for i = 1,table.getn(namespace.EnemyWarBounties),1 do               -- *condition* and *ifTrue* or *ifFalse*  === i != table.getn(warbounties) ? "," : ""
-            namespace.EnemyBountyList = namespace.EnemyBountyList .. " " .. (i ~= table.getn(namespace.EnemyWarBounties) and tostring(namespace.EnemyWarBounties[i].. ",") or "")
+            namespace.EnemyBountyList = namespace.EnemyBountyList .. " "  .. (i ~= table.getn(namespace.EnemyWarBounties) and tostring(namespace.EnemyWarBounties[i]) .. "," or tostring(namespace.EnemyWarBounties[i]));
         end
         if (table.getn(enemyBountyNames) > namespace.numEnemyBounties) then
             namespace.SetNotificationText("A NEW ENEMY BOUNTY HAS APPEARED", 6)

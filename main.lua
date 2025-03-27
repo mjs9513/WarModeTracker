@@ -109,10 +109,7 @@ local function OnWarUpdates(_, event, arg1, arg2, arg3, arg4)
 		namespace.OnCombatExit();
 	end
 	if(event=="ZONE_CHANGED_NEW_AREA") then
-		if(KillingBlowResetZone == true) then
-			TotalWarKillingBlows = 0
-		end
-		namespace.SearchForBounties()
+		namespace.PvPToolsOnZoneChanged();
 		namespace.SetTrackerTexts()
 
 
